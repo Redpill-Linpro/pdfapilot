@@ -1,0 +1,55 @@
+server:
+    port: 10344
+    address: localhost
+
+
+# security configuration (this key should be unique for your application, and kept secret)
+jhipster.security.rememberme.key: a37fb3b124b0a7f67a22bbd5d8a6b643aa23410c
+
+async:
+    corePoolSize: 2
+    maxPoolSize: 50
+    queueCapacity: 10000
+
+spring:
+    data:
+        mongodb:
+            host: localhost
+            port: 27017
+            database: pdfaPilotPromus
+
+    mail:
+        host: localhost
+        port: 25
+        user:
+        password:
+        protocol: smtp
+        tls: false
+        auth: false
+
+metrics:
+    jmx.enabled: false
+
+swagger:
+    apiDocsLocation: http://localhost:8080
+    title: jhipster API
+    description: jhipster applications and beyond!
+    termsOfServiceUrl: http://jhipster.github.io/
+    contact:
+    license: Apache 2.0
+    licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
+
+pdfaPilot:
+    timeout: 300
+    noprogress: true
+    nohits: true
+    nosummary: true
+    forceopenoffice: false
+    corePoolSize: 5
+    maxPoolSize: 10
+    keepAliveTime: 5000
+    queueCapacity: 500
+    # timeout in milliseconds
+    taskTimeout: 300000
+    exe: /usr/local/callas_pdfaPilot_CLI/pdfaPilot
+    node: ppp-test-001

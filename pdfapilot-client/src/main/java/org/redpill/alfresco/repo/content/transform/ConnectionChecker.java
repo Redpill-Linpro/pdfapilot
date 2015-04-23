@@ -1,11 +1,17 @@
 package org.redpill.alfresco.repo.content.transform;
 
-import org.json.JSONException;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ConnectionChecker extends AbstractLifecycleBean {
+
+  private final static Logger LOG = Logger.getLogger(ConnectionChecker.class);
 
   @Autowired
   private PdfaPilotClient _pdfaPilotClient;
@@ -13,19 +19,36 @@ public class ConnectionChecker extends AbstractLifecycleBean {
   @Autowired
   private PdfaPilotWorker _pdfaPilotWorker;
 
+  private ReentrantLock _lock = new ReentrantLock();
+
   @Override
   protected void onBootstrap(ApplicationEvent event) {
-    try {
-      boolean expired = _pdfaPilotClient.getStatus().getBoolean("expired");
-
-      _pdfaPilotWorker.setAvailable(!expired);
-    } catch (JSONException ex) {
-      throw new RuntimeException(ex);
-    }
+    checkConnection();
   }
 
   @Override
   protected void onShutdown(ApplicationEvent event) {
+  }
+
+  public void checkConnection() {
+    boolean lockAcquired = _lock.tryLock();
+
+    try {
+      if (lockAcquired) {
+        boolean connected = _pdfaPilotClient.isConnected();
+
+        _pdfaPilotWorker.setAvailable(connected);
+
+        return;
+      }
+
+      LOG.warn("The connection check is still running, please increase the job interval.");
+    } finally {
+      if (lockAcquired) {
+        _lock.unlock();
+      }
+    }
+
   }
 
 }

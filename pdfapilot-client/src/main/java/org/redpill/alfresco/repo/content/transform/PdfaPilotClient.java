@@ -7,29 +7,38 @@ import java.io.OutputStream;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.json.JSONObject;
+import org.redpill.alfresco.repo.content.transform.PdfaPilotClientImpl.CreateResult;
 
 public interface PdfaPilotClient {
+  
+  static final String RESPONSE_ID_HEADER = "X-CreatePDF-ID";
 
-  String getVersion();
+  JSONObject getVersion();
 
   JSONObject getStatus();
 
   void create(String filename, InputStream inputStream, OutputStream outputStream, PdfaPilotTransformationOptions options);
 
-  File create(String filename, File sourceFile, PdfaPilotTransformationOptions options);
+  CreateResult create(String filename, File sourceFile, PdfaPilotTransformationOptions options);
 
-  void create(String filename, ContentReader contentReader, ContentWriter contentWriter, PdfaPilotTransformationOptions options);
+  String create(String filename, ContentReader contentReader, ContentWriter contentWriter, PdfaPilotTransformationOptions options);
 
   void createPdf(String filename, InputStream inputStream, OutputStream outputStream);
 
-  void createPdf(String sourceFilename, ContentReader contentReader, ContentWriter contentWriter);
+  String createPdf(String sourceFilename, ContentReader contentReader, ContentWriter contentWriter);
 
-  File createPdf(String filename, File sourceFile);
+  CreateResult createPdf(String filename, File sourceFile);
 
   void createPdfa(String filename, InputStream inputStream, OutputStream outputStream);
 
-  File createPdfa(String filename, File sourceFile);
+  CreateResult createPdfa(String filename, File sourceFile);
 
-  void createPdfa(String sourceFilename, ContentReader contentReader, ContentWriter contentWriter);
+  String createPdfa(String sourceFilename, ContentReader contentReader, ContentWriter contentWriter);
+  
+  boolean isConnected();
+  
+  boolean isLicensed();
+
+  void auditCreationResult(String id, boolean verified);
 
 }

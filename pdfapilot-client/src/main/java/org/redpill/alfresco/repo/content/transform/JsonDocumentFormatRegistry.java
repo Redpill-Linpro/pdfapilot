@@ -1,23 +1,24 @@
 package org.redpill.alfresco.repo.content.transform;
 
-import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component("ppc.documentFormatRegistry")
 public class JsonDocumentFormatRegistry extends SimpleDocumentFormatRegistry {
 
-  public JsonDocumentFormatRegistry(InputStream input) throws JSONException, IOException {
+  @Autowired
+  public JsonDocumentFormatRegistry(@Value("classpath:pdfapilot-document-formats.js") InputStream input) throws JSONException, IOException {
     readJsonArray(IOUtils.toString(input));
-  }
-
-  public JsonDocumentFormatRegistry(String source) throws JSONException {
-    readJsonArray(source);
   }
 
   private void readJsonArray(String source) throws JSONException {

@@ -1,0 +1,7 @@
+server:
+    port: 8083
+
+pdfaPilot:
+    exe: /usr/local/callas_pdfaPilot_CLI/pdfaPilot
+    endpoint: http://172.16.1.2:1200
+    # endpoint: http://pdfapilot1.vgregion.se:1600

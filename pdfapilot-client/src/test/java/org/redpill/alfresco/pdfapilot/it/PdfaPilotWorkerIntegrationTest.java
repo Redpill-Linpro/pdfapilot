@@ -15,6 +15,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.site.SiteInfo;
 import org.alfresco.util.TempFileProvider;
 import org.junit.Test;
+import org.redpill.alfresco.repo.content.transform.PdfaPilotClientModel;
 import org.redpill.alfresco.repo.content.transform.PdfaPilotTransformationOptions;
 import org.redpill.alfresco.test.AbstractRepoIntegrationTest;
 
@@ -108,6 +109,8 @@ public class PdfaPilotWorkerIntegrationTest extends AbstractRepoIntegrationTest 
     options.setSourceNodeRef(document);
 
     _worker.transform(contentReader, contentWriter, options);
+
+    assertTrue(_nodeService.hasAspect(document, PdfaPilotClientModel.ASPECT_UNVERIFIED) || _nodeService.hasAspect(document, PdfaPilotClientModel.ASPECT_VERIFIED));
 
     System.out.println(file.getAbsolutePath());
   }

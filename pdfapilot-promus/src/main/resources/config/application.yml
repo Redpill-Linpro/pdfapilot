@@ -1,0 +1,65 @@
+# Disable the spring security default configuration from spring-boot-actuator
+management.security.enabled: true
+security.basic.enabled: false
+
+# Disable Jolokia - An http/json bridge for remote JMX access
+endpoints.jolokia.enabled: false
+
+# security configuration (this key should be unique for your application, and kept secret)
+jhipster.security.rememberme.key: a37fb3b124b0a7f67a22bbd5d8a6b643aa23410c
+
+async:
+    corePoolSize: 2
+    maxPoolSize: 50
+    queueCapacity: 10000
+
+spring:
+    mail:
+        host: localhost
+        port: 25
+        user:
+        password:
+        protocol: smtp
+        tls: false
+        auth: false
+        from: pdfaPilotPromus@localhost
+
+    messageSource:
+        cacheSeconds: 1
+
+    jackson:
+        # date-format: yyyy-MM-dd HH:mm:ss
+        date-format: org.codehaus.jackson.map.util.ISO8601DateFormat
+        # joda-date-time-format: yyyy-MM-dd HH:mm:ss
+
+authentication:
+    oauth:
+        clientid: pdfaPilotPromusapp
+        secret: mySecretOAuthSecret
+        # Token is valid 30 minutes
+        tokenValidityInSeconds: 1800
+
+swagger:
+    title: pdfaPilotPromus API
+    description: pdfaPilotPromus applications and beyond!
+    termsOfServiceUrl: http://jhipster.github.io/
+    contact:
+    license: Apache 2.0
+    licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
+
+pdfaPilot:
+    timeout: 300
+    noprogress: true
+    nohits: true
+    nosummary: true
+    forceopenoffice: false
+    nooptimization: true
+    corePoolSize: 2
+    maxPoolSize: 2
+    keepAliveTime: 5000
+    queueCapacity: 50000
+    # timeout in milliseconds
+    taskTimeout: 300000
+    exe: /usr/local/bin/pdfaPilot
+    node: ppp-001
+    endpoint:

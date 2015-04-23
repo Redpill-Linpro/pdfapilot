@@ -4,19 +4,13 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
   <context:annotation-config />
-  <context:component-scan base-package="org.redpill.alfresco.acav.repo,org.redpill.alfresco.pdfapilot.it" />
-
-  <bean id="ppc.pdfaPilotClient" class="org.redpill.alfresco.repo.content.transform.PdfaPilotClientImpl" />
-
-  <bean id="ppc.pdfaPilotWorker" class="org.redpill.alfresco.repo.content.transform.PdfaPilotWorker" />
-
-  <bean id="ppc.connectionChecker" class="org.redpill.alfresco.repo.content.transform.ConnectionChecker" />
+  <context:component-scan base-package="org.redpill.alfresco.repo.content.transform" />
 
   <bean name="transformer.worker.abstractPdfaPilot" class="org.redpill.alfresco.repo.content.transform.PdfaPilotContentTransformerWorker" abstract="true">
     <property name="endpointHost" value="${pdfapilot.endpoint.host}" />
     <property name="endpointPort" value="${pdfapilot.endpoint.port}" />
     <property name="pdfaPilotExe" value="${pdfapilot.exe}" />
-    <property name="documentFormatRegistry" ref="pdfaPilot.documentFormatRegistry" />
+    <property name="documentFormatRegistry" ref="ppc.documentFormatRegistry" />
     <property name="nodeService" ref="NodeService" />
     <property name="metadataContentFactory" ref="metadata-writer.contentFactory" />
     <property name="metadataExtracterRegistry" ref="metadataExtracterRegistry" />
@@ -111,34 +105,6 @@
         </entry>
       </map>
     </property>
-  </bean>
-
-  <bean name="pdfaPilot.defaultDocumentFormatRegistry" class="org.redpill.alfresco.repo.content.transform.DefaultDocumentFormatRegistry" />
-
-  <bean name="pdfaPilot.documentFormatRegistry" class="org.redpill.alfresco.repo.content.transform.JsonDocumentFormatRegistry">
-    <constructor-arg value="classpath:pdfapilot-document-formats.js" type="java.io.InputStream" />
-  </bean>
-
-  <bean name="pdfaPilot.pdfaOptions" class="org.redpill.alfresco.repo.content.transform.PdfaPilotTransformationOptions">
-    <property name="readLimitTimeMs" value="-1" />
-    <property name="maxSourceSizeKBytes" value="-1" />
-    <property name="readLimitKBytes" value="-1" />
-    <property name="pageLimit" value="-1" />
-    <property name="maxPages" value="-1" />
-    <property name="includeEmbedded" value="true" />
-    <property name="optimize" value="false" />
-    <property name="level" value="2b" />
-  </bean>
-
-  <bean name="pdfaPilot.pdfOptions" class="org.redpill.alfresco.repo.content.transform.PdfaPilotTransformationOptions">
-    <property name="readLimitTimeMs" value="-1" />
-    <property name="maxSourceSizeKBytes" value="-1" />
-    <property name="readLimitKBytes" value="-1" />
-    <property name="pageLimit" value="-1" />
-    <property name="maxPages" value="-1" />
-    <property name="includeEmbedded" value="true" />
-    <property name="optimize" value="true" />
-    <property name="level" value="" />
   </bean>
 
 </beans>

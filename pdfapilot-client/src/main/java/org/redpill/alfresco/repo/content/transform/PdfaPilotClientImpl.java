@@ -1,7 +1,6 @@
 package org.redpill.alfresco.repo.content.transform;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -30,7 +29,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component("ppc.pdfaPilotClient")
 public class PdfaPilotClientImpl implements PdfaPilotClient {
 
   private static final Logger LOG = Logger.getLogger(PdfaPilotClientImpl.class);
@@ -38,8 +39,8 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
   @Value("${pdfapilot.transformationTimeout}")
   private int _transformationTimeout;
 
-  @Value("${pdfapilot.maxConnections}")
-  private int _maxConnections;
+  @Value("${pdfapilot.maxConcurrentConnections}")
+  private int _maxConcurrentConnections;
 
   @Value("${pdfapilot.serverUrl}")
   private String _serverUrl;
@@ -58,11 +59,14 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
   @Value("${pdfapilot.aliveCheckTimeout}")
   private int _aliveCheckTimeout;
 
+  @Value("${pdfapilot.maxTotalConnections}")
+  private int _maxTotalConnections;
+
   @Override
-  public String getVersion() {
+  public JSONObject getVersion() {
     HttpClient client = getHttpClient();
 
-    GetMethod method = new GetMethod(_serverUrl + "/api/v1/version");
+    GetMethod method = new GetMethod(_serverUrl + "/bapi/v1/version");
     method.getParams().setSoTimeout(_aliveCheckTimeout * 1000);
     method.getHostAuthState().setPreemptive();
     method.getParams().setContentCharset("UTF-8");
@@ -74,12 +78,14 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
     try {
       int status = client.executeMethod(method);
 
+      String response = IOUtils.toString(method.getResponseBodyAsStream()).trim();
+
       if (status == 200) {
-        return method.getResponseBodyAsString().trim();
+        return new JSONObject(response);
       }
 
-      throw new RuntimeException("Version check failed: " + method.getStatusLine() + "\n" + method.getResponseBodyAsString().trim());
-    } catch (IOException e) {
+      throw new RuntimeException("Version check failed: " + method.getStatusLine() + "\n" + response);
+    } catch (Exception e) {
       throw new RuntimeException("Version check failed\n", e);
     } finally {
       method.releaseConnection();
@@ -89,8 +95,9 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
   @Override
   public JSONObject getStatus() {
     HttpClient client = getHttpClient();
-
-    GetMethod method = new GetMethod(_serverUrl + "/api/v1/status");
+    
+    GetMethod method = new GetMethod(_serverUrl + "/bapi/v1/status");
+    
     method.getParams().setSoTimeout(_aliveCheckTimeout * 1000);
     method.getHostAuthState().setPreemptive();
     method.getParams().setContentCharset("UTF-8");
@@ -102,11 +109,13 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
     try {
       int status = client.executeMethod(method);
 
+      String response = IOUtils.toString(method.getResponseBodyAsStream()).trim();
+
       if (status == 200) {
-        return new JSONObject(method.getResponseBodyAsString().trim());
+        return new JSONObject(response);
       }
 
-      throw new RuntimeException("Status check failed: " + method.getStatusLine() + "\n" + method.getResponseBodyAsString().trim());
+      throw new RuntimeException("Status check failed: " + method.getStatusLine() + "\n" + response);
     } catch (Exception e) {
       throw new RuntimeException("Status check failed\n", e);
     } finally {
@@ -120,7 +129,7 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
   }
 
   @Override
-  public File createPdf(String filename, File sourceFile) {
+  public CreateResult createPdf(String filename, File sourceFile) {
     return create(filename, sourceFile, null);
   }
 
@@ -130,18 +139,18 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
   }
 
   @Override
-  public File createPdfa(String filename, File sourceFile) {
+  public CreateResult createPdfa(String filename, File sourceFile) {
     return create(filename, sourceFile, null);
   }
 
   @Override
-  public void createPdf(String sourceFilename, ContentReader contentReader, ContentWriter contentWriter) {
-    create(sourceFilename, contentReader, contentWriter, null);
+  public String createPdf(String sourceFilename, ContentReader contentReader, ContentWriter contentWriter) {
+    return create(sourceFilename, contentReader, contentWriter, null);
   }
 
   @Override
-  public void createPdfa(String sourceFilename, ContentReader contentReader, ContentWriter contentWriter) {
-    create(sourceFilename, contentReader, contentWriter, null);
+  public String createPdfa(String sourceFilename, ContentReader contentReader, ContentWriter contentWriter) {
+    return create(sourceFilename, contentReader, contentWriter, null);
   }
 
   @Override
@@ -152,7 +161,7 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
 
     String variant = StringUtils.isNotBlank(pdfaLevel) ? "pdfa" : "pdf";
 
-    PostMethod method = new PostMethod(_serverUrl + "/api/v1/create/" + variant);
+    PostMethod method = new PostMethod(_serverUrl + "/bapi/v1/create/" + variant);
     method.getParams().setSoTimeout(_aliveCheckTimeout * 1000);
     method.getHostAuthState().setPreemptive();
     method.getParams().setContentCharset("UTF-8");
@@ -162,11 +171,15 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
     method.addRequestHeader("Accept-Content", "application/text");
 
     try {
-      Part[] parts = new Part[3];
+      JSONObject json = new JSONObject();
+      json.put("nodeRef", options.getSourceNodeRef());
 
-      parts[0] = new FilePart("file", new ByteArrayPartSource(FilenameUtils.getName(filename), IOUtils.toByteArray(inputStream)));
-      parts[1] = new StringPart("filename", FilenameUtils.getName(filename));
-      parts[2] = new StringPart("level", pdfaLevel);
+      Part[] parts = new Part[4];
+
+      parts[0] = new FilePart("file", new ByteArrayPartSource(FilenameUtils.getName(filename), IOUtils.toByteArray(inputStream)), null, "UTF-8");
+      parts[1] = new StringPart("filename", FilenameUtils.getName(filename), "UTF-8");
+      parts[2] = new StringPart("level", pdfaLevel, "UTF-8");
+      parts[3] = new StringPart("data", json.toString(), "UTF-8");
 
       method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
 
@@ -188,7 +201,7 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
   }
 
   @Override
-  public File create(String filename, File sourceFile, PdfaPilotTransformationOptions options) {
+  public CreateResult create(String filename, File sourceFile, PdfaPilotTransformationOptions options) {
     if (LOG.isDebugEnabled()) {
       LOG.debug("Creating PDF from '" + sourceFile.getAbsolutePath() + "' with filename '" + filename + "'.");
     }
@@ -199,7 +212,7 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
 
     String variant = StringUtils.isNotBlank(pdfaLevel) ? "pdfa" : "pdf";
 
-    PostMethod method = new PostMethod(_serverUrl + "/api/v1/create/" + variant);
+    PostMethod method = new PostMethod(_serverUrl + "/bapi/v1/create/" + variant);
     method.getParams().setSoTimeout(_aliveCheckTimeout * 1000);
     method.getHostAuthState().setPreemptive();
     method.getParams().setContentCharset("UTF-8");
@@ -209,11 +222,15 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
     method.addRequestHeader("Accept-Content", "application/text");
 
     try {
-      Part[] parts = new Part[3];
+      JSONObject json = new JSONObject();
+      json.put("nodeRef", options.getSourceNodeRef());
+      
+      Part[] parts = new Part[4];
 
-      parts[0] = new FilePart("file", sourceFile);
-      parts[1] = new StringPart("filename", filename);
-      parts[2] = new StringPart("level", pdfaLevel);
+      parts[0] = new FilePart("file", sourceFile, null, "UTF-8");
+      parts[1] = new StringPart("filename", filename, "UTF-8");
+      parts[2] = new StringPart("level", pdfaLevel, "UTF-8");
+      parts[3] = new StringPart("data", json.toString(), "UTF-8");
 
       method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
 
@@ -230,8 +247,9 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
       File destination = TempFileProvider.createTempFile("pdfaPilot", ".pdf");
 
       FileUtils.copyInputStreamToFile(method.getResponseBodyAsStream(), destination);
+      String id = method.getResponseHeader(PdfaPilotClient.RESPONSE_ID_HEADER).getValue();
 
-      return destination;
+      return new CreateResult(destination, id);
     } catch (Exception e) {
       throw new RuntimeException("Create PDF failed\n", e);
     } finally {
@@ -240,14 +258,14 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
   }
 
   @Override
-  public void create(String filename, ContentReader contentReader, ContentWriter contentWriter, PdfaPilotTransformationOptions options) {
+  public String create(String filename, ContentReader contentReader, ContentWriter contentWriter, PdfaPilotTransformationOptions options) {
     HttpClient client = getHttpClient();
 
     String pdfaLevel = options != null ? options.getLevel() : null;
 
     String variant = StringUtils.isNotBlank(pdfaLevel) ? "pdfa" : "pdf";
 
-    PostMethod method = new PostMethod(_serverUrl + "/api/v1/create/" + variant);
+    PostMethod method = new PostMethod(_serverUrl + "/bapi/v1/create/" + variant);
 
     method.getParams().setSoTimeout(_aliveCheckTimeout * 1000);
     method.getHostAuthState().setPreemptive();
@@ -258,11 +276,15 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
     method.addRequestHeader("Accept-Content", "application/text");
 
     try {
-      Part[] parts = new Part[3];
+      JSONObject json = new JSONObject();
+      json.put("nodeRef", options.getSourceNodeRef());
 
-      parts[0] = new FilePart("file", new ContentReaderPartSource(filename, contentReader));
-      parts[1] = new StringPart("filename", FilenameUtils.getName(filename));
-      parts[2] = new StringPart("level", pdfaLevel);
+      Part[] parts = new Part[4];
+
+      parts[0] = new FilePart("file", new ContentReaderPartSource(filename, contentReader), null, "UTF-8");
+      parts[1] = new StringPart("filename", FilenameUtils.getName(filename), "UTF-8");
+      parts[2] = new StringPart("level", pdfaLevel, "UTF-8");
+      parts[3] = new StringPart("data", json.toString(), "UTF-8");
 
       method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
 
@@ -277,10 +299,88 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
       }
 
       contentWriter.putContent(method.getResponseBodyAsStream());
+
+      return method.getRequestHeader(RESPONSE_ID_HEADER).getValue();
     } catch (Exception ex) {
       throw new RuntimeException("Create PDF failed\n", ex);
     } finally {
       method.releaseConnection();
+    }
+  }
+
+  @Override
+  public void auditCreationResult(String id, boolean verified) {
+    HttpClient client = getHttpClient();
+
+    PostMethod method = new PostMethod(_serverUrl + "/bapi/v1/create/audit");
+
+    method.getParams().setSoTimeout(_aliveCheckTimeout * 1000);
+    method.getHostAuthState().setPreemptive();
+    method.getParams().setContentCharset("UTF-8");
+
+    method.addRequestHeader("Accept-Charset", "UTF-8");
+    method.addRequestHeader("Accept-Language", "en-ca,en;q=0.8");
+    method.addRequestHeader("Accept-Content", "application/text");
+
+    try {
+      method.addParameter("id", id);
+      method.addParameter("verified", verified ? "true" : "false");
+
+      int status = client.executeMethod(method);
+
+      if (status != 200) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Audit Create PDF failed: " + method.getStatusLine() + "\n" + method.getResponseBodyAsString().trim());
+        }
+
+        throw new RuntimeException("Audit Create PDF failed: " + method.getStatusLine() + "\n" + method.getResponseBodyAsString().trim());
+      }
+    } catch (Exception ex) {
+      throw new RuntimeException("Audit Create PDF failed\n", ex);
+    } finally {
+      method.releaseConnection();
+    }
+  }
+
+  @Override
+  public boolean isConnected() {
+    try {
+      boolean connected = getStatus() != null;
+
+      if (connected) {
+        LOG.debug("pdfaPilot is connected...");
+      } else {
+        LOG.debug("pdfaPilot is NOT connected...");
+      }
+
+      return connected;
+    } catch (Throwable ex) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace(ex.getMessage(), ex);
+      }
+
+      return false;
+    }
+  }
+
+  @Override
+  public boolean isLicensed() {
+    try {
+      boolean licensed = !getStatus().getBoolean("expired");
+
+      if (licensed) {
+        LOG.debug("pdfaPilot is licensed...");
+      } else {
+        LOG.debug("pdfaPilot is NOT licensed...");
+      }
+
+      return licensed;
+    } catch (Throwable ex) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace(ex.getMessage(), ex);
+      }
+
+      return false;
     }
   }
 
@@ -303,8 +403,8 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
 
     client.getHttpConnectionManager().getParams().setSoTimeout(_transformationTimeout * 1000);
 
-    client.getHttpConnectionManager().getParams().setMaxTotalConnections(_maxConnections);
-    client.getHttpConnectionManager().getParams().setDefaultMaxConnectionsPerHost(_maxConnections);
+    client.getHttpConnectionManager().getParams().setMaxTotalConnections(_maxTotalConnections);
+    client.getHttpConnectionManager().getParams().setDefaultMaxConnectionsPerHost(_maxConcurrentConnections);
     URI uri;
 
     try {
@@ -315,7 +415,7 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
 
     HostConfiguration hostConfiguration = new HostConfiguration();
     hostConfiguration.setHost(uri.getHost(), uri.getPort(), uri.getScheme());
-    client.getHttpConnectionManager().getParams().setMaxConnectionsPerHost(hostConfiguration, _maxConnections);
+    client.getHttpConnectionManager().getParams().setMaxConnectionsPerHost(hostConfiguration, _maxConcurrentConnections);
 
     client.getState().setCredentials(new AuthScope(null, -1, null), new UsernamePasswordCredentials(_username, _password));
 
@@ -325,6 +425,19 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
     client.getParams().setParameter("http.method.retry-handler", retryhandler);
 
     return client;
+  }
+
+  public class CreateResult {
+
+    public CreateResult(File file, String id) {
+      this.file = file;
+      this.id = id;
+    }
+
+    public File file;
+
+    public String id;
+
   }
 
 }

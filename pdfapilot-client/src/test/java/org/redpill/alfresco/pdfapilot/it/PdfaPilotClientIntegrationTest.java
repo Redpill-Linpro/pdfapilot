@@ -22,10 +22,10 @@ public class PdfaPilotClientIntegrationTest extends AbstractRepoIntegrationTest 
   private PdfaPilotClient _client;
 
   @Test
-  public void testGetVersion() {
-    String version = _client.getVersion();
+  public void testGetVersion() throws JSONException {
+    JSONObject version = _client.getVersion();
 
-    assertTrue(version.indexOf("callas pdfaPilot CLI") >= 0);
+    assertTrue(version.getString("version").indexOf("callas pdfaPilot CLI") >= 0);
   }
 
   @Test

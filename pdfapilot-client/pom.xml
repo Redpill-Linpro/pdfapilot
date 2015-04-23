@@ -89,6 +89,13 @@
       <version>1.0.5</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>3.0.5.RELEASE</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -113,6 +120,8 @@
         <configuration>
           <source>1.7</source>
           <target>1.7</target>
+          <compilerVersion>1.7</compilerVersion>
+          <fork>true</fork>
         </configuration>
       </plugin>
     </plugins>

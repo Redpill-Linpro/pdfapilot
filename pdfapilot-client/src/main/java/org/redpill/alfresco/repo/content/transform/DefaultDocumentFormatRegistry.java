@@ -1,9 +1,11 @@
 package org.redpill.alfresco.repo.content.transform;
 
-import org.alfresco.repo.content.MimetypeMap;
-
 import java.util.Collections;
 
+import org.alfresco.repo.content.MimetypeMap;
+import org.springframework.stereotype.Component;
+
+@Component("ppc.defaultDocumentFormatRegistry")
 public class DefaultDocumentFormatRegistry extends SimpleDocumentFormatRegistry {
 
   public DefaultDocumentFormatRegistry() {
@@ -11,7 +13,8 @@ public class DefaultDocumentFormatRegistry extends SimpleDocumentFormatRegistry 
     pdf.setStoreProperties(DocumentFamily.TEXT, Collections.singletonMap("FilterName", "word_pdf_Export"));
     pdf.setStoreProperties(DocumentFamily.SPREADSHEET, Collections.singletonMap("FilterName", "excel_pdf_Export"));
     pdf.setStoreProperties(DocumentFamily.PRESENTATION, Collections.singletonMap("FilterName", "powerpoint_pdf_Export"));
-    // pdf.setStoreProperties(DocumentFamily.DRAWING, Collections.singletonMap("FilterName", "draw_pdf_Export"));
+    // pdf.setStoreProperties(DocumentFamily.DRAWING,
+    // Collections.singletonMap("FilterName", "draw_pdf_Export"));
     addFormat(pdf);
 
     DocumentFormat doc = new DocumentFormat();
