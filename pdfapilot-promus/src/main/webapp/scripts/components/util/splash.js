@@ -21,9 +21,9 @@ function Splash($modal, $rootScope) {
 
 Splash.$inject = ['$modal', '$rootScope'];
 
-angular.module('pdfaPilotPromusApp').service('splash', Splash);
+angular.module('pdfapilotpromusApp').service('splash', Splash);
 
-angular.module('pdfaPilotPromusApp').run([
+angular.module('pdfapilotpromusApp').run([
   '$templateCache',
   function ($templateCache) {
     $templateCache.put('splash/index.html',

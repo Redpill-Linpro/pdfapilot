@@ -1,7 +1,7 @@
 /* globals $ */
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .directive('passwordStrengthBar', function () {
         return {
             replace: true,

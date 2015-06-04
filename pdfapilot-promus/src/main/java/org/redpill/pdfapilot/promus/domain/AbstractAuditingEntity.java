@@ -1,6 +1,6 @@
 package org.redpill.pdfapilot.promus.domain;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,18 +18,22 @@ public abstract class AbstractAuditingEntity {
 
     @CreatedBy
     @Field("created_by")
+    @JsonIgnore
     private String createdBy;
 
     @CreatedDate
     @Field("created_date")
+    @JsonIgnore
     private DateTime createdDate = DateTime.now();
 
     @LastModifiedBy
     @Field("last_modified_by")
+    @JsonIgnore
     private String lastModifiedBy;
 
     @LastModifiedDate
     @Field("last_modified_date  ")
+    @JsonIgnore
     private DateTime lastModifiedDate = DateTime.now();
 
     public String getCreatedBy() {

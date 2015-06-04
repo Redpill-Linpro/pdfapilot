@@ -1,6 +1,7 @@
 ######################
 # Project Specific
 ######################
+/src/main/webapp/assets/styles/main.css
 /src/main/webapp/dist
 
 ######################
@@ -116,4 +117,8 @@ Desktop.ini
 *.*~
 *~
 .merge_file*
-/src/main/webapp/bower_components/**
+
+######################
+# Gradle Wrapper
+######################
+!gradle/wrapper/gradle-wrapper.jar

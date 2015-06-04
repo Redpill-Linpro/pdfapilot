@@ -46,6 +46,7 @@ public class Status {
       for (String status : _status) {
         if (status.startsWith("Expiration Date")) {
           expirationDateString = StringUtils.replace(status, "Expiration Date", "").trim();
+          break;
         }
       }
 
@@ -53,6 +54,7 @@ public class Status {
 
       _expirationDate = LocalDate.parse(expirationDateString, fmt);
     } catch (Exception ex) {
+      _expirationDate = null;
     }
   }
 

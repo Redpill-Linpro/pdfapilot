@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .controller('ActivationController', function ($scope, $stateParams, Auth) {
         Auth.activateAccount({key: $stateParams.key}).then(function () {
             $scope.error = null;

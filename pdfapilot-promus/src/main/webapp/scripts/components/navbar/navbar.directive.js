@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .directive('activeMenu', function($translate, $locale, tmhDynamicLocale) {
         return {
             restrict: 'A',

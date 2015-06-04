@@ -1,22 +1,21 @@
 package org.redpill.pdfapilot.promus.web.rest;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
+import com.codahale.metrics.annotation.Timed;
 import org.redpill.pdfapilot.promus.domain.User;
 import org.redpill.pdfapilot.promus.repository.UserRepository;
+import org.redpill.pdfapilot.promus.security.AuthoritiesConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * REST controller for managing users.

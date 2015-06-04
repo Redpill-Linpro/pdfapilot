@@ -2,6 +2,12 @@ package org.redpill.pdfapilot.promus.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.redpill.pdfapilot.promus.domain.util.CustomDateTimeDeserializer;
+import org.redpill.pdfapilot.promus.domain.util.CustomDateTimeSerializer;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -13,10 +19,12 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+
 /**
  * A user.
  */
-@Document(collection = "T_USER")
+@Document(collection = "JHI_USER")
 public class User extends AbstractAuditingEntity implements Serializable {
 
     @Id
@@ -52,7 +60,17 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @Size(max = 20)
     @Field("activation_key")
+    @JsonIgnore
     private String activationKey;
+
+    @Size(max = 20)
+    @Field("reset_key")
+    private String resetKey;
+
+    @JsonSerialize(using = CustomDateTimeSerializer.class)
+    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
+    @Field("reset_date")
+    private DateTime resetDate = null;
 
     @JsonIgnore
     private Set<Authority> authorities = new HashSet<>();
@@ -119,6 +137,22 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setActivationKey(String activationKey) {
         this.activationKey = activationKey;
+    }
+
+    public String getResetKey() {
+        return resetKey;
+    }
+
+    public void setResetKey(String resetKey) {
+        this.resetKey = resetKey;
+    }
+
+    public DateTime getResetDate() {
+       return resetDate;
+    }
+
+    public void setResetDate(DateTime resetDate) {
+       this.resetDate = resetDate;
     }
 
     public String getLangKey() {

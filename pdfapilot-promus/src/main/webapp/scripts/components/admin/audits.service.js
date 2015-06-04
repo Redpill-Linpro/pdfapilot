@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .factory('AuditsService', function ($http) {
         return {
             findAll: function () {

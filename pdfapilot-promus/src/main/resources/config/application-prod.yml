@@ -1,5 +1,8 @@
 server:
-    port: 8083
+    port: 8080
+
+liquibase:
+    context: prod
 
 spring:
     profiles:
@@ -9,10 +12,6 @@ spring:
             host: localhost
             port: 27017
             database: pdfaPilotPromus
-
-    mail:
-        baseUrl: http://localhost:8080
-
     thymeleaf:
         mode: XHTML
         cache: true
@@ -28,3 +27,9 @@ metrics:
         host: localhost
         port: 2003
         prefix: pdfaPilotPromus
+
+http:
+    cache:
+        timeToLiveInDays: 31
+
+

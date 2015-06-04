@@ -1,7 +1,7 @@
 /* globals $ */
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .directive('pdfapilotpromusAppPager', function() {
         return {
             templateUrl: 'scripts/components/form/pager.html'

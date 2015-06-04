@@ -1,7 +1,7 @@
 /* globals $ */
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .directive('showValidation', function() {
         return {
             restrict: 'A',

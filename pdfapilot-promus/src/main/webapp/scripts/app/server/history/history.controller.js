@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .controller('HistoryController', function ($scope, Principal, ngTableParams, AuditsService, splash) {
         $scope.tableParameters = new ngTableParams({
             page: 1,

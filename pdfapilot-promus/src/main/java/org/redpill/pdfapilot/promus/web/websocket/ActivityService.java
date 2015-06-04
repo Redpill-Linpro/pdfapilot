@@ -1,16 +1,9 @@
 package org.redpill.pdfapilot.promus.web.websocket;
 
-import static org.redpill.pdfapilot.promus.config.WebsocketConfiguration.IP_ADDRESS;
-
-import java.security.Principal;
-import java.util.Calendar;
-
-import javax.inject.Inject;
-
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.redpill.pdfapilot.promus.security.SecurityUtils;
 import org.redpill.pdfapilot.promus.web.websocket.dto.ActivityDTO;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
@@ -21,6 +14,12 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import javax.inject.Inject;
+import java.security.Principal;
+import java.util.Calendar;
+
+import static org.redpill.pdfapilot.promus.config.WebsocketConfiguration.IP_ADDRESS;
 
 @Controller
 public class ActivityService implements ApplicationListener<SessionDisconnectEvent> {

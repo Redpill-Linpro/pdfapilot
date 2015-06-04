@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .controller('HealthController', function ($scope, MonitoringService) {
         $scope.updatingHealth = true;
         $scope.separator = '.';

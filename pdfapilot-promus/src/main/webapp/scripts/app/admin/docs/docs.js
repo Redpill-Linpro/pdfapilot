@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .config(function ($stateProvider) {
         $stateProvider
             .state('docs', {

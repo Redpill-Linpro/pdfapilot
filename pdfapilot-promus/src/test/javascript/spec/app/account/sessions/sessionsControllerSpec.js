@@ -2,7 +2,7 @@
 
 describe('Controllers Tests ', function () {
 
-    beforeEach(module('pdfaPilotPromusApp'));
+    beforeEach(module('pdfapilotpromusApp'));
 
     describe('SessionsController', function () {
         var $scope, SessionsService;

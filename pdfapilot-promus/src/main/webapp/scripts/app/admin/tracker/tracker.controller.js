@@ -1,17 +1,10 @@
-angular.module('pdfaPilotPromusApp')
-    .controller('TrackerController', function ($scope, AuthServerProvider, $cookies, $http) {
+angular.module('pdfapilotpromusApp')
+    .controller('TrackerController', function ($scope, AuthServerProvider, $cookies, $http, Tracker) {
         // This controller uses a Websocket connection to receive user activities in real-time.
 
         $scope.activities = [];
-        var stompClient = null;
-        var socket = new SockJS('/websocket/tracker');
-        stompClient = Stomp.over(socket);
-        var headers = {};
-        headers['X-CSRF-TOKEN'] = $cookies[$http.defaults.xsrfCookieName];
-        stompClient.connect(headers, function(frame) {
-            stompClient.subscribe('/topic/tracker', function(activity) {
-                showActivity(JSON.parse(activity.body));
-            });
+        Tracker.receive().then(null, null, function(activity) {
+            showActivity(activity);
         });
 
         function showActivity(activity) {
@@ -29,6 +22,5 @@ angular.module('pdfaPilotPromusApp')
             if (!existingActivity && (activity.page != 'logout')) {
                 $scope.activities.push(activity);
             }
-            $scope.$apply();
         };
     });

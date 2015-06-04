@@ -47,6 +47,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/swagger-ui/**")
             .antMatchers("/api/register")
             .antMatchers("/api/activate")
+            .antMatchers("/api/account/reset_password/init")
+            .antMatchers("/api/account/reset_password/finish")
             .antMatchers("/test/**");
     }
 
@@ -60,7 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
         return new SecurityEvaluationContextExtension();
     }
-
+    
     @Configuration
     @Order(1)
     public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -74,8 +76,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
           .antMatchers("/bapi/**").authenticated()
           .and()
           .httpBasic().realmName("pdfaPilot Promus API");
-      }
-
+      }    
     }
-    
 }

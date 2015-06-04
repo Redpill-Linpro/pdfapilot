@@ -14,16 +14,16 @@ import org.springframework.data.querydsl.QueryDslPredicateExecutor;
  */
 public interface PersistenceAuditEventRepository extends MongoRepository<PersistentAuditEvent, String>, QueryDslPredicateExecutor<PersistentAuditEvent> {
 
-  List<PersistentAuditEvent> findByPrincipal(String principal);
+    List<PersistentAuditEvent> findByPrincipal(String principal);
 
-  List<PersistentAuditEvent> findByPrincipalAndAuditEventDateAfter(String principal, LocalDateTime after);
+    List<PersistentAuditEvent> findByPrincipalAndAuditEventDateAfter(String principal, LocalDateTime after);
 
-  List<PersistentAuditEvent> findAllByAuditEventDateBetween(LocalDateTime fromDate, LocalDateTime toDate);
+    List<PersistentAuditEvent> findAllByAuditEventDateBetween(LocalDateTime fromDate, LocalDateTime toDate);
+    
+    Long countByAuditEventType(String auditEventType);
 
-  Long countByAuditEventType(String auditEventType);
+    Page<PersistentAuditEvent> findByAuditEventType(String auditEventType, Pageable pageable);
 
-  Page<PersistentAuditEvent> findByAuditEventType(String auditEventType, Pageable pageable);
-
-  Page<PersistentAuditEvent> findByAuditEventTypeIn(Iterable<String> auditEventTypes, Pageable pageable);
-
+    Page<PersistentAuditEvent> findByAuditEventTypeIn(Iterable<String> auditEventTypes, Pageable pageable);
+    
 }

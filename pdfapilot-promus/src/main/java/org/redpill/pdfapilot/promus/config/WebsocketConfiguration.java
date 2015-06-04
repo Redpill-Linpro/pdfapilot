@@ -35,12 +35,11 @@ public class WebsocketConfiguration extends AbstractWebSocketMessageBrokerConfig
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/websocket/activity")
+        registry.addEndpoint("/websocket/tracker")
             .setHandshakeHandler(new DefaultHandshakeHandler() {
                 @Override
                 protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
@@ -55,12 +54,6 @@ public class WebsocketConfiguration extends AbstractWebSocketMessageBrokerConfig
             })
             .withSockJS()
             .setInterceptors(httpSessionHandshakeInterceptor());
-        
-        registry.addEndpoint("/websocket/tracker").withSockJS();
-        
-        registry.addEndpoint("/websocket/threadPoolStatus").withSockJS();
-        
-        registry.addEndpoint("/websocket/createPdf").withSockJS();
     }
 
     @Bean

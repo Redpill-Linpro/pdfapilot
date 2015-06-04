@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .factory('Register', function ($resource) {
         return $resource('api/register', {}, {
         });

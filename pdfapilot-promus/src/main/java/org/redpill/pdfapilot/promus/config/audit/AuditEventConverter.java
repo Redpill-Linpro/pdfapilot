@@ -20,7 +20,7 @@ public class AuditEventConverter {
             return Collections.emptyList();
         }
 
-        List<AuditEvent> auditEvents = new ArrayList<AuditEvent>();
+        List<AuditEvent> auditEvents = new ArrayList<>();
 
         for (PersistentAuditEvent persistentAuditEvent : persistentAuditEvents) {
             AuditEvent auditEvent = new AuditEvent(persistentAuditEvent.getAuditEventDate().toDate(), persistentAuditEvent.getPrincipal(),
@@ -50,7 +50,7 @@ public class AuditEventConverter {
     }
 
     /**
-     * Internal conversion. This method will allow to save additionnals data.
+     * Internal conversion. This method will allow to save additional data.
      * By default, it will save the object as string
      *
      * @param data the data to convert

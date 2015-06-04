@@ -2,7 +2,7 @@
 
 describe('Directive Tests ', function () {
 
-    beforeEach(module('pdfaPilotPromusApp'));
+    beforeEach(module('pdfapilotpromusApp'));
 
     var elm, scope, $httpBackend;
 

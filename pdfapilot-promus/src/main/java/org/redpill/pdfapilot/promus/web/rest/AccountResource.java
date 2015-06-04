@@ -1,14 +1,6 @@
 package org.redpill.pdfapilot.promus.web.rest;
 
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import org.apache.commons.lang.StringUtils;
+import com.codahale.metrics.annotation.Timed;
 import org.redpill.pdfapilot.promus.domain.Authority;
 import org.redpill.pdfapilot.promus.domain.User;
 import org.redpill.pdfapilot.promus.repository.UserRepository;
@@ -16,18 +8,21 @@ import org.redpill.pdfapilot.promus.security.SecurityUtils;
 import org.redpill.pdfapilot.promus.service.MailService;
 import org.redpill.pdfapilot.promus.service.UserService;
 import org.redpill.pdfapilot.promus.web.rest.dto.UserDTO;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.codahale.metrics.annotation.Timed;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing the current user's account.
@@ -74,6 +69,7 @@ public class AccountResource {
                 })
         );
     }
+
     /**
      * GET  /activate -> activate the registered user.
      */
@@ -116,7 +112,8 @@ public class AccountResource {
                     user.getLastName(),
                     user.getEmail(),
                     user.getLangKey(),
-                    user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toCollection(LinkedList::new))),
+                    user.getAuthorities().stream().map(Authority::getName)
+                        .collect(Collectors.toCollection(LinkedList::new))),
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
@@ -133,7 +130,8 @@ public class AccountResource {
             .findOneByLogin(userDTO.getLogin())
             .filter(u -> u.getLogin().equals(SecurityUtils.getCurrentLogin()))
             .map(u -> {
-                userService.updateUserInformation(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail());
+                userService.updateUserInformation(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(),
+                    userDTO.getLangKey());
                 return new ResponseEntity<String>(HttpStatus.OK);
             })
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -153,8 +151,32 @@ public class AccountResource {
         userService.changePassword(password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    
-    public String getName() {
-      return getClass().getName();
+
+    @RequestMapping(value = "/account/reset_password/init",
+        method = RequestMethod.POST,
+        produces = MediaType.TEXT_PLAIN_VALUE)
+    @Timed
+    public ResponseEntity<?> requestPasswordReset(@RequestBody String mail, HttpServletRequest request) {
+        
+        return userService.requestPasswordReset(mail)
+            .map(user -> {
+                String baseUrl = request.getScheme() +
+                    "://" +
+                    request.getServerName() +
+                    ":" +
+                    request.getServerPort();
+            mailService.sendPasswordResetMail(user, baseUrl);
+            return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
+            }).orElse(new ResponseEntity<>("e-mail address not registered", HttpStatus.BAD_REQUEST));
+        
+    }
+
+    @RequestMapping(value = "/account/reset_password/finish",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<String> finishPasswordReset(@RequestParam(value = "key") String key, @RequestParam(value = "newPassword") String newPassword) {
+        return userService.completePasswordReset(newPassword, key)
+              .map(user -> new ResponseEntity<String>(HttpStatus.OK)).orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }

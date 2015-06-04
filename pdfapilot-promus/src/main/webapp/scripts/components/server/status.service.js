@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .factory('StatusService', function ($http, $q) {
         return {
             threadPoolStatus: function () {

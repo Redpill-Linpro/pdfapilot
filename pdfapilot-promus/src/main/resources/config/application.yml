@@ -13,24 +13,15 @@ async:
     maxPoolSize: 50
     queueCapacity: 10000
 
-spring:
-    mail:
-        host: localhost
-        port: 25
-        user:
-        password:
-        protocol: smtp
-        tls: false
-        auth: false
-        from: pdfaPilotPromus@localhost
-
-    messageSource:
-        cacheSeconds: 1
-
-    jackson:
-        # date-format: yyyy-MM-dd HH:mm:ss
-        date-format: org.codehaus.jackson.map.util.ISO8601DateFormat
-        # joda-date-time-format: yyyy-MM-dd HH:mm:ss
+mail:
+    host: localhost
+    port: 25
+    username:
+    password:
+    protocol: smtp
+    tls: false
+    auth: false
+    from: pdfaPilotPromus@localhost
 
 authentication:
     oauth:
@@ -46,6 +37,12 @@ swagger:
     contact:
     license: Apache 2.0
     licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# custom config start
+jackson:
+    # date-format: yyyy-MM-dd HH:mm:ss
+    date-format: org.codehaus.jackson.map.util.ISO8601DateFormat
+    # joda-date-time-format: yyyy-MM-dd HH:mm:ss
 
 pdfaPilot:
     timeout: 300
@@ -63,3 +60,4 @@ pdfaPilot:
     exe: /usr/local/bin/pdfaPilot
     node: ppp-001
     endpoint:
+# custom config end

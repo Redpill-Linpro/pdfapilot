@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .factory('Language', function ($q, $http, $translate, LANGUAGES) {
         return {
             getCurrent: function () {
@@ -27,8 +27,11 @@ angular.module('pdfaPilotPromusApp')
  They are written in English to avoid character encoding issues (not a perfect solution)
  */
     .constant('LANGUAGES', [
-        // 'en', 'fr', 'sv'
         'en', 'fr'
         //JHipster will add new languages here
     ]
 );
+
+
+
+

@@ -11,6 +11,9 @@ async:
     maxPoolSize: 50
     queueCapacity: 10000
 
+liquibase:
+    context: test
+
 spring:
     data:
         mongodb:
@@ -18,14 +21,14 @@ spring:
             port: 27017
             database: pdfaPilotPromus
 
-    mail:
-        host: localhost
-        port: 25
-        user:
-        password:
-        protocol: smtp
-        tls: false
-        auth: false
+mail:
+    host: localhost
+    port: 25
+    username:
+    password:
+    protocol: smtp
+    tls: false
+    auth: false
 
 metrics:
     jmx.enabled: false
@@ -44,6 +47,7 @@ pdfaPilot:
     noprogress: true
     nohits: true
     nosummary: true
+    nooptimization: true
     forceopenoffice: false
     corePoolSize: 5
     maxPoolSize: 10

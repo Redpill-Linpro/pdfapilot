@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .controller('StatisticsController', function ($scope, Principal) {
         Principal.identity().then(function(account) {
             $scope.account = account;

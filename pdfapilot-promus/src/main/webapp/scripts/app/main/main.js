@@ -1,14 +1,13 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .config(function ($stateProvider) {
         $stateProvider
             .state('home', {
                 parent: 'site',
                 url: '/',
                 data: {
-                    roles: [],
-                    pageTitle: 'main.pageTitle'
+                    roles: []
                 },
                 views: {
                     'content@': {

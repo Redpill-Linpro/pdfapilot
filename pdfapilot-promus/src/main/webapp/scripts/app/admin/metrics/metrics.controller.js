@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .controller('MetricsController', function ($scope, MonitoringService) {
         $scope.metrics = {};
         $scope.updatingMetrics = true;

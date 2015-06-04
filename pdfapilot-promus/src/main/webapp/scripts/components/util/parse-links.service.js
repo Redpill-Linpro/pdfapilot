@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .service('ParseLinks', function () {
         this.parse = function (header) {
             if (header.length == 0) {

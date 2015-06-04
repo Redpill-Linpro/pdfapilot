@@ -1,4 +1,4 @@
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .config(function ($stateProvider) {
         $stateProvider
             .state('tracker', {
@@ -18,6 +18,12 @@ angular.module('pdfaPilotPromusApp')
                         $translatePartialLoader.addPart('tracker');
                         return $translate.refresh();
                     }]
-                }
+                },
+                onEnter: function(Tracker) {
+                    Tracker.subscribe();
+                },
+                onExit: function(Tracker) {
+                    Tracker.unsubscribe();
+                },
             });
     });

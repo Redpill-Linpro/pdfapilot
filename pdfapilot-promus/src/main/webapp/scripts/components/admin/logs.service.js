@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .factory('LogsService', function ($resource) {
         return $resource('api/logs', {}, {
             'findAll': { method: 'GET', isArray: true},

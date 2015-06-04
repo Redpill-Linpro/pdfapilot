@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .controller('StatusController', function ($scope, Principal, StatusService, AuditsService, MonitoringService, moment) {
 
         StatusService.receiveThreadPoolStatus(function (status) {

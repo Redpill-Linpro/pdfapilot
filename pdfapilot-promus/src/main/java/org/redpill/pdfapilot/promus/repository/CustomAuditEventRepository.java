@@ -26,7 +26,7 @@ public class CustomAuditEventRepository {
     @Bean
     public AuditEventRepository auditEventRepository() {
         return new AuditEventRepository() {
-          
+
             @Inject
             private AuditEventConverter auditEventConverter;
 

@@ -7,15 +7,9 @@
             <Pattern>[%p] %c - %m%n</Pattern>
         </encoder>
     </appender>
-
     <logger name="org.redpill.pdfapilot.promus" level="DEBUG"/>
     <logger name="org.hibernate.ejb.HibernatePersistence" level="OFF"/>
     <logger name="org.apache.catalina.startup.DigesterFactory" level="OFF"/>
-    <!-- 
-    <logger name="org.springframework.web" level="DEBUG"/>
-    <logger name="org.springframework.http" level="DEBUG"/>
-    <logger name="org.springframework" level="DEBUG"/>
-    -->
 
     <root level="WARN">
         <appender-ref ref="CONSOLE"/>

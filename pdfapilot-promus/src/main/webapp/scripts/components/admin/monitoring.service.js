@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp')
+angular.module('pdfapilotpromusApp')
     .factory('MonitoringService', function ($rootScope, $http) {
         return {
             getMetrics: function () {

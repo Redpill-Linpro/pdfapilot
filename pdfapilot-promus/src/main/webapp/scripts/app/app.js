@@ -1,12 +1,14 @@
 'use strict';
 
-angular.module('pdfaPilotPromusApp', ['LocalStorageModule', 'tmh.dynamicLocale',
+angular.module('pdfapilotpromusApp', ['LocalStorageModule', 'tmh.dynamicLocale',
     'ngResource', 'ui.router', 'ngCookies', 'pascalprecht.translate', 'ngCacheBuster',
-    'infinite-scroll', 'angularMoment', 'ngTable', 'angular-filters', 'ui.bootstrap'])
+    'infinite-scroll', 'angularMoment', 'ngTable', 'angular-filters', 'ui.bootstrap', 'ui.router'])
 
     .run(function ($rootScope, $location, $window, $http, $state, $translate, Auth, Principal, Language, ENV, VERSION) {
         $rootScope.ENV = ENV;
         $rootScope.VERSION = VERSION;
+        $rootScope.isInRole = Principal.isInRole;
+
         $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams) {
             $rootScope.toState = toState;
             $rootScope.toStateParams = toStateParams;

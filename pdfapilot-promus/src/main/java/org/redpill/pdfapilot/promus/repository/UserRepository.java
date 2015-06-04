@@ -17,10 +17,13 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     List<User> findAllByActivatedIsFalseAndCreatedDateBefore(DateTime dateTime);
 
+    Optional<User> findOneByResetKey(String resetKey);
+
     Optional<User> findOneByEmail(String email);
 
     Optional<User> findOneByLogin(String login);
 
+    @Override
     void delete(User t);
 
 }
