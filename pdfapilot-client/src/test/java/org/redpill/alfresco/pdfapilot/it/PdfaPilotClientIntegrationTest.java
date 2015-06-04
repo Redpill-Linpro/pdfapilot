@@ -10,7 +10,7 @@ import java.io.InputStream;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.redpill.alfresco.repo.content.transform.PdfaPilotClient;
+import org.redpill.alfresco.pdfapilot.client.PdfaPilotClient;
 import org.redpill.alfresco.test.AbstractRepoIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
