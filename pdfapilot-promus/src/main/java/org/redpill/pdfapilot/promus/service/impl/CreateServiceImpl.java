@@ -147,6 +147,7 @@ public class CreateServiceImpl implements CreateService {
 
       if (exec.getExitValue() >= 100) {
         LOG.debug(exec.getOutput());
+        LOG.debug(exec.getError());
         throw new RuntimeException("Execution of " + StringUtils.join(command, " ") + " failed with exit value " + exec.getExitValue());
       }
 

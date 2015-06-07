@@ -5,9 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,9 +23,6 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.support.HttpRequestWrapper;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -96,16 +91,17 @@ public class CreateControllerTest extends AbstractControllerTest {
 
     MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
 
-    parts.add("level", new HttpEntity<String>("2b", textHeaders));
+    if (pdfa) {
+      parts.add("level", new HttpEntity<String>("2b", textHeaders));
+    }
+
     parts.add("filename", new HttpEntity<String>(filename, textHeaders));
-    // parts.add("file", new HttpEntity<ClassPathResource>(new ClassPathResource(filename), wordHeaders));
     parts.add("file", new ClassPathResource(filename));
+    parts.add("data", "{\"nodeRef\": \"workspace:SpacesStore/custom_node_ref\"}");
 
     ClientHttpRequestInterceptor acceptHeaderPdf = new AcceptHeaderHttpRequestInterceptor(APPLICATION_PDF);
     _restTemplate.setInterceptors(Arrays.asList(acceptHeaderPdf));
 
-    // ResponseEntity<byte[]> response = _restTemplate.postForEntity(url, parts,
-    // byte[].class);
     ResponseEntity<byte[]> response = _restTemplate.postForEntity(url, parts, byte[].class);
 
     assertTrue(response.getStatusCode().is2xxSuccessful());
