@@ -100,7 +100,7 @@ public class PdfaPilotWorkerIntegrationTest extends AbstractRepoIntegrationTest 
 
     final NodeRef document = uploadDocument(_site, filename).getNodeRef();
 
-    for (int x = 0; x < 100; x++) {
+    for (int x = 0; x < 10; x++) {
       Thread thread = new Thread(new Runnable() {
 
         @Override
