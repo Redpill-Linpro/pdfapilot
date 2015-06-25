@@ -20,6 +20,17 @@
         <maven>3.0.0</maven>
     </prerequisites>
 
+    <distributionManagement>
+        <repository>
+            <id>redpill-linpro-releases</id>
+            <url>https://maven.redpill-linpro.com/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>redpill-linpro-snapshots</id>
+            <url>https://maven.redpill-linpro.com/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <HikariCP.version>2.3.7</HikariCP.version>
         <assertj-core.version>1.0.0m1</assertj-core.version>
@@ -708,4 +719,5 @@
             </dependencies>
         </profile>
     </profiles>
+
 </project>
