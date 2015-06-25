@@ -1,0 +1,126 @@
+<div ng-cloak>
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline history-search">
+                <div class="form-group">
+                    <label for="fromFilter">From</label>
+                    <p class="input-group">
+                        <input type="text" class="form-control" id="fromFilter" datepicker-popup="yyyy-MM-dd" ng-model="from" is-open="fromOpened" init-date="" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openFrom($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="toFilter">To</label>
+                    <p class="input-group">
+                        <input type="text" class="form-control" id="toFilter" datepicker-popup="yyyy-MM-dd" ng-model="to" is-open="toOpened" init-date="" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openTo($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="filenameFilter">Filename</label>
+                    <p class="input-group">
+                        <input type="text" class="form-control" id="filenameFilter" ng-model="filename" />
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="successFilter">Success</label>
+                    <p class="input-group">
+                        <select class="form-control" id="successFilter" ng-model="success">
+                            <option value="" label="All" />
+                            <option value="true" label="Success" />
+                            <option value="false" label="Failure" />
+                        </select>
+                    </p>
+                </div>
+                <!--
+                <div class="form-group">
+                    <label for="usernameFilter">User</label>
+                    <p class="input-group">
+                        <input type="text" class="form-control" id="usernameFilter" ng-model="username" />
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="nodeFilter">Node</label>
+                    <p class="input-group">
+                        <input type="text" class="form-control" id="nodeFilter" ng-model="node" />
+                    </p>
+                </div>
+                -->
+                <div class="form-group">
+                    <label for="usernameNodeRef">NodeRef</label>
+                    <p class="input-group">
+                        <input type="text" class="form-control" id="usernameNodeRef" ng-model="nodeRef" />
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="verifiedFilter">Verified</label>
+                    <p class="input-group">
+                        <select class="form-control" id="verifiedFilter" ng-model="verified">
+                            <option value="" label="All" />
+                            <option value="true" label="Yes" />
+                            <option value="false" label="No" />
+                        </select>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table ng-table="tableParameters" class="table table-striped">
+                <tbody>
+                    <tr ng-repeat="entry in $data">
+                        <td data-title="'Date'">
+                            {{ entry.data.date | amDateFormat:'YYYY-MM-DD HH:mm:ss'}}
+                        </td>
+                        <td data-title="'Duration (s)'">
+                            {{ entry.data.duration / 1000 | number : 1 }}
+                        </td>
+                        <td data-title="'Filename'">
+                            {{ entry.data.sourceFilename }}
+                        </td>
+                        <td data-title="'Size'">
+                            {{ entry.data.sourceLength | bytes }}
+                        </td>
+                        <td data-title="'From'">
+                            <img ng-src="{{ icon(entry.data.sourceFilename) }}" />
+                        </td>
+                        <td data-title="'To'">
+                            <img ng-src="{{ icon(entry.data.targetFilename) }}" />
+                        </td>
+                        <!--
+                        <td data-title="'User'">
+                            {{ entry.principal }}
+                        </td>
+                        <td data-title="'Node'">
+                            {{ entry.data.node }}
+                        </td>
+                        -->
+                        <td data-title="'NodeRef'">
+                            {{ entry.data.nodeRef }}
+                        </td>
+                        <td data-title="'Verified'">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true" ng-show="entry.data.verified === 'true'" ng-cloak></span>
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-show="entry.data.verified !== 'true'" ng-cloak></span>
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-show="!entry.data.verified" ng-cloak></span>
+                        </td>
+                        <td data-title="'Data'">
+                            <a style="cursor: pointer;" ng-click="metadata(entry)" title="Info">
+                                <span class="document-action glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            </a>
+                        </td>
+                        <td data-title="'Success'">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true" ng-show="entry.data.success === 'true'" ng-cloak></span>
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-show="entry.data.success !== 'true'" ng-cloak></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

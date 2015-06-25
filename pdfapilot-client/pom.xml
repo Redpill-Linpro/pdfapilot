@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.redpill-linpro.alfresco</groupId>
+    <artifactId>alfresco-base</artifactId>
+    <version>1.1.1.15</version>
+  </parent>
+
+  <groupId>org.redpill.pdfapilot.client</groupId>
+  <artifactId>pdfapilot-client</artifactId>
+  <version>1.1.0</version>
+
+  <name>pdfaPilot client</name>
+  <description>This is a transformer implementation as a subsystem of pdfaPilot run as a dispatcher.</description>
+
+  <properties>
+    <alfresco.groupId>org.alfresco</alfresco.groupId>
+    <alfresco.version>4.2.4</alfresco.version>
+  </properties>
+
+  <developers>
+    <developer>
+      <id>nike</id>
+      <name>Niklas Ekman</name>
+      <email>niklas.ekman@redpill-linpro.com</email>
+      <organization>Redpill Linpro</organization>
+      <organizationUrl>http://www.redpill-linpro.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor />
+  </contributors>
+
+  <scm>
+    <connection>scm:git:https://github.com/Redpill-Linpro/pdfa-pilot-converter.git</connection>
+    <developerConnection>scm:git:https://github.com/Redpill-Linpro/pdfa-pilot-converter.git</developerConnection>
+    <url>https://github.com/Redpill-Linpro/pdfa-pilot-converter</url>
+    <tag>pdfa-pilot-converter-1.1.0</tag>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/Redpill-Linpro/pdfa-pilot-converter/issues</url>
+  </issueManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>${alfresco.groupId}</groupId>
+      <artifactId>alfresco-repository</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${alfresco.groupId}</groupId>
+      <artifactId>alfresco-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.9.5</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>3.0.5.RELEASE</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.redpill-linpro.alfresco.module</groupId>
+      <artifactId>metadatawriter</artifactId>
+      <version>4.2.8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.redpill-linpro.alfresco</groupId>
+      <artifactId>alfresco-test-repo</artifactId>
+      <version>1.0.10</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>3.0.5.RELEASE</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.ejb</groupId>
+      <artifactId>ejb-api</artifactId>
+      <version>3.0</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
+    </testResources>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.2.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <repositories>
+    <repository>
+      <id>redpill-linpro</id>
+      <url>https://maven.redpill-linpro.com/nexus/content/groups/public</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+
+</project>

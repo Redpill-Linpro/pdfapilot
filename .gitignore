@@ -1,0 +1,11 @@
+.idea
+.project
+.settings
+*.iml
+alf_data_dev
+target
+.classpath
+rebel.xml
+/pdfapilot-client/
+/pdfapilot-promus/
+.DS_Store

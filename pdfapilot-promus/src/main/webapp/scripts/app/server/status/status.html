@@ -1,0 +1,64 @@
+<div ng-cloak>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h2 translate="status.title">Status</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-2">
+            <h3>Transformations</h3>
+            <table class="table table-bordered">
+                <tr>
+                    <td>Active</td>
+                    <td>{{ activeCount }}/{{ maximumPoolSize }}</td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>{{ success }}</td>
+                </tr>
+                <tr>
+                    <td>Failed</td>
+                    <td>{{ failed }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <h3>System</h3>
+            <table class="table table-bordered">
+                <tr>
+                    <td>Start time</td>
+                    <td>{{ starttime | amDateFormat:'YYYY-MM-DD HH:mm:ss' }}</td>
+                </tr>
+                <tr>
+                    <td>Uptime</td>
+                    <td>{{ uptime.hours }} hour(s) {{ uptime.minutes }} minute(s)</td>
+                </tr>
+                <tr>
+                    <td>Node</td>
+                    <td>pps-001</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-2">
+            <h3>Load</h3>
+            <table class="table table-bordered">
+                <tr>
+                    <td>Available CPU's</td>
+                    <td>{{ processors }}</td>
+                </tr>
+                <tr>
+                    <td>CPU Load</td>
+                    <td>{{ systemloadAverage }}</td>
+                </tr>
+                <tr>
+                    <td>Free Disk Space</td>
+                    <td>{{ freeDiskSpace }} GB</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+</div>
