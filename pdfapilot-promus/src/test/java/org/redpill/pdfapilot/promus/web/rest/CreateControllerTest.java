@@ -56,7 +56,7 @@ public class CreateControllerTest extends AbstractControllerTest {
     MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
 
     parts.add("level", "2b");
-    parts.add("filename", "test.doc");
+    parts.add("filename", " test.doc");
     parts.add("file", new ClassPathResource("test.doc"));
 
     ClientHttpRequestInterceptor acceptHeaderPdf = new AcceptHeaderHttpRequestInterceptor(APPLICATION_PDF);
@@ -95,7 +95,7 @@ public class CreateControllerTest extends AbstractControllerTest {
       parts.add("level", new HttpEntity<String>("2b", textHeaders));
     }
 
-    parts.add("filename", new HttpEntity<String>(filename, textHeaders));
+    parts.add("filename", new HttpEntity<String>(" " + filename + " ", textHeaders));
     parts.add("file", new ClassPathResource(filename));
     parts.add("data", "{\"nodeRef\": \"workspace:SpacesStore/custom_node_ref\"}");
 

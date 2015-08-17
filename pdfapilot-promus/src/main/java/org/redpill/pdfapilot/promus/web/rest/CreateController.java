@@ -45,11 +45,11 @@ public class CreateController extends AbstractController {
     try {
       Map<String, Object> properties = parseProperties(data);
 
-      _createService.createPdf(file.getInputStream(), filename, properties, (targetFile, id) -> {
+      _createService.createPdf(file.getInputStream(), filename.trim(), properties, (targetFile, id) -> {
         response.setContentLengthLong(targetFile.length());
 
         String headerKey = "Content-Disposition";
-        String headerValue = String.format("attachment; filename=\"%s\"", getTargetFilename(filename));
+        String headerValue = String.format("attachment; filename=\"%s\"", getTargetFilename(filename.trim()));
         response.setHeader(headerKey, headerValue);
 
         response.setHeader(RESPONSE_ID_HEADER, id);
@@ -75,11 +75,11 @@ public class CreateController extends AbstractController {
     try {
       Map<String, Object> properties = parseProperties(data);
 
-      _createService.createPdfa(file.getInputStream(), filename, properties, level, (targetFile, id) -> {
+      _createService.createPdfa(file.getInputStream(), filename.trim(), properties, level, (targetFile, id) -> {
         response.setContentLengthLong(targetFile.length());
 
         String headerKey = "Content-Disposition";
-        String headerValue = String.format("attachment; filename=\"%s\"", getTargetFilename(filename));
+        String headerValue = String.format("attachment; filename=\"%s\"", getTargetFilename(filename.trim()));
         response.setHeader(headerKey, headerValue);
 
         response.setHeader(RESPONSE_ID_HEADER, id);
