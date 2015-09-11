@@ -53,6 +53,7 @@
     <logger name="com.mangofactory.swagger" level="WARN"/>
     <logger name="com.wordnik.swagger" level="WARN"/>
     <logger name="sun.rmi.transport" level="WARN"/>
+    <logger name="om.mongodb.driver.cluster" level="WARN" />
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
