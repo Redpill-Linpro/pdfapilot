@@ -41,12 +41,27 @@ public class CreateControllerTest extends AbstractControllerTest {
 
   @Test
   public void testCreatePdf() throws Exception {
-    createPdf(false);
+    createPdf("teståäöÅÄÖ.doc", false, APPLICATION_PDF);
+  }
+
+  @Test
+  public void testCreatePdf2() throws Exception {
+    createPdf("test2.doc", false, APPLICATION_PDF);
   }
 
   @Test
   public void testCreatePdfa() throws Exception {
-    createPdf(true);
+    createPdf("teståäöÅÄÖ.doc", true, APPLICATION_PDF);
+  }
+
+  @Test
+  public void testCreatePdfa2() throws Exception {
+    createPdf("test2.pdf", true, "application/json");
+  }
+
+  @Test
+  public void testCreatePdfa3() throws Exception {
+    createPdf("test3.pdf", true, "application/json");
   }
 
   @Test
@@ -56,7 +71,7 @@ public class CreateControllerTest extends AbstractControllerTest {
     MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
 
     parts.add("level", "2b");
-    parts.add("filename", "test.doc");
+    parts.add("filename", " test.doc");
     parts.add("file", new ClassPathResource("test.doc"));
 
     ClientHttpRequestInterceptor acceptHeaderPdf = new AcceptHeaderHttpRequestInterceptor(APPLICATION_PDF);
@@ -79,15 +94,11 @@ public class CreateControllerTest extends AbstractControllerTest {
     assertTrue(response2.getStatusCode().is2xxSuccessful());
   }
 
-  public void createPdf(boolean pdfa) throws Exception {
+  public void createPdf(String filename, boolean pdfa, String resultContentType) throws Exception {
     String url = "http://localhost:" + _port + "/bapi/v1/create/" + (pdfa ? "pdfa" : "pdf");
-    String filename = "teståäöÅÄÖ.doc";
 
     HttpHeaders textHeaders = new HttpHeaders();
     textHeaders.setContentType(new MediaType("text", "plain", Charset.forName("UTF-8")));
-
-    HttpHeaders wordHeaders = new HttpHeaders();
-    wordHeaders.setContentType(new MediaType("application", "msword", Charset.forName("UTF-8")));
 
     MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
 
@@ -95,20 +106,25 @@ public class CreateControllerTest extends AbstractControllerTest {
       parts.add("level", new HttpEntity<String>("2b", textHeaders));
     }
 
-    parts.add("filename", new HttpEntity<String>(filename, textHeaders));
+    parts.add("filename", new HttpEntity<String>(" " + filename + " ", textHeaders));
     parts.add("file", new ClassPathResource(filename));
     parts.add("data", "{\"nodeRef\": \"workspace:SpacesStore/custom_node_ref\"}");
 
-    ClientHttpRequestInterceptor acceptHeaderPdf = new AcceptHeaderHttpRequestInterceptor(APPLICATION_PDF);
+    ClientHttpRequestInterceptor acceptHeaderPdf = new AcceptHeaderHttpRequestInterceptor(resultContentType);
     _restTemplate.setInterceptors(Arrays.asList(acceptHeaderPdf));
 
     ResponseEntity<byte[]> response = _restTemplate.postForEntity(url, parts, byte[].class);
+    
+    if (!response.getStatusCode().is2xxSuccessful()) {
+      assertEquals(400, response.getStatusCode().value());
+      assertEquals("application/json", resultContentType);
+    } else {
+      assertEquals("application/pdf", resultContentType);
+      
+      PdfReader pdfReader = new PdfReader(response.getBody());
 
-    assertTrue(response.getStatusCode().is2xxSuccessful());
-
-    PdfReader pdfReader = new PdfReader(response.getBody());
-
-    assertEquals(6, pdfReader.getNumberOfPages());
+      assertEquals(6, pdfReader.getNumberOfPages());
+    }
   }
 
   class AcceptHeaderHttpRequestInterceptor implements ClientHttpRequestInterceptor {
@@ -121,7 +137,6 @@ public class CreateControllerTest extends AbstractControllerTest {
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-
       HttpRequestWrapper requestWrapper = new HttpRequestWrapper(request);
       requestWrapper.getHeaders().setAccept(Arrays.asList(MediaType.valueOf(_headerValue)));
 

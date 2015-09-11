@@ -30,9 +30,9 @@
                     <label for="successFilter">Success</label>
                     <p class="input-group">
                         <select class="form-control" id="successFilter" ng-model="success">
-                            <option value="" label="All" />
-                            <option value="true" label="Success" />
-                            <option value="false" label="Failure" />
+                            <option value="" label="All">All</option>
+                            <option value="true" label="Success">Success</option>
+                            <option value="false" label="Failure">Failure</option>
                         </select>
                     </p>
                 </div>
@@ -60,9 +60,9 @@
                     <label for="verifiedFilter">Verified</label>
                     <p class="input-group">
                         <select class="form-control" id="verifiedFilter" ng-model="verified">
-                            <option value="" label="All" />
-                            <option value="true" label="Yes" />
-                            <option value="false" label="No" />
+                            <option value="" label="All">All</option>
+                            <option value="true" label="Yes">Yes</option>
+                            <option value="false" label="No">No</option>
                         </select>
                     </p>
                 </div>
@@ -106,8 +106,7 @@
                         </td>
                         <td data-title="'Verified'">
                             <span class="glyphicon glyphicon-ok" aria-hidden="true" ng-show="entry.data.verified === 'true'" ng-cloak></span>
-                            <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-show="entry.data.verified !== 'true'" ng-cloak></span>
-                            <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-show="!entry.data.verified" ng-cloak></span>
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-show="!entry.data.verified || entry.data.verified !== 'true'" ng-cloak></span>
                         </td>
                         <td data-title="'Data'">
                             <a style="cursor: pointer;" ng-click="metadata(entry)" title="Info">

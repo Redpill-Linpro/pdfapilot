@@ -60,4 +60,7 @@ pdfaPilot:
     exe: /usr/local/bin/pdfaPilot
     node: ppp-001
     endpoint:
+
+multipart:
+    maxFileSize: 100MB
 # custom config end
