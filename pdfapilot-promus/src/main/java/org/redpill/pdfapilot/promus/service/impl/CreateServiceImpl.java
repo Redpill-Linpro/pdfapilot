@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.redpill.pdfapilot.promus.domain.CreatePdfResult;
 import org.redpill.pdfapilot.promus.service.CreateProcessor;
 import org.redpill.pdfapilot.promus.service.CreateService;
+import org.redpill.pdfapilot.promus.service.PdfaPilotException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
@@ -50,7 +51,7 @@ public class CreateServiceImpl implements CreateService {
 
   @Value("${pdfaPilot.forceopenoffice}")
   private boolean _forceopenoffice;
-  
+
   @Value("${pdfaPilot.nooptimization}")
   private boolean _nooptimization;
 
@@ -143,15 +144,20 @@ public class CreateServiceImpl implements CreateService {
 
       ExecCommand exec = new ExecCommand(command);
 
-      LOG.debug("Std err: " + exec.getError());
+      int exitValue = exec.getExitValue();
+      List<String> output = exec.getOutput();
+      List<String> error = exec.getError();
 
-      if (exec.getExitValue() >= 100) {
-        LOG.debug(exec.getOutput());
-        LOG.debug(exec.getError());
-        throw new RuntimeException("Execution of " + StringUtils.join(command, " ") + " failed with exit value " + exec.getExitValue());
+      if (exitValue >= 100) {
+        LOG.debug(output);
+        LOG.debug(error);
+
+        String message = "Execution of " + StringUtils.join(command, " ") + " failed with exit value " + exitValue;
+
+        throw new PdfaPilotException(exitValue, message, output, error);
       }
 
-      for (String line : exec.getOutput()) {
+      for (String line : output) {
         if (!line.startsWith("Output")) {
           continue;
         }
@@ -170,6 +176,12 @@ public class CreateServiceImpl implements CreateService {
       String id = auditSuccess(sourceFile, targetFile, pdfa, properties, duration);
 
       createCallback.handleFile(targetFile, id);
+    } catch (PdfaPilotException ex) {
+      errorProcess(sourceFile, pdfa, ex);
+
+      auditFailure(sourceFile, targetFile, pdfa, properties, ex);
+
+      throw ex;
     } catch (Throwable ex) {
       errorProcess(sourceFile, pdfa, ex);
 

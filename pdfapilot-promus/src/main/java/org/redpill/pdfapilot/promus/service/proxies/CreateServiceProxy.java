@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.redpill.pdfapilot.promus.service.CreateProcessor;
 import org.redpill.pdfapilot.promus.service.CreateService;
+import org.redpill.pdfapilot.promus.service.PdfaPilotException;
 import org.redpill.pdfapilot.promus.service.impl.CreateCallback;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -83,6 +84,10 @@ public class CreateServiceProxy implements CreateService {
 
       return;
     } catch (ExecutionException e) {
+      if (e.getCause() instanceof PdfaPilotException) {
+        throw (PdfaPilotException) e.getCause();
+      } 
+      
       throw new RuntimeException(e);
     }
   }
