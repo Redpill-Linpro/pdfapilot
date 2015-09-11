@@ -76,6 +76,11 @@ public class PdfaPilotWorkerIntegrationTest extends AbstractRepoIntegrationTest 
   }
 
   @Test
+  public void testPdf2() throws Exception {
+    testDocument("test2.pdf");
+  }
+
+  @Test
   public void testXlsm() throws Exception {
     testDocument("test.xlsm");
   }
@@ -95,12 +100,22 @@ public class PdfaPilotWorkerIntegrationTest extends AbstractRepoIntegrationTest 
     testDocument("test2.doc");
   }
 
+  @Test
+  public void testPptx() throws Exception {
+    testDocument("test.pptx");
+  }
+
+  @Test
+  public void testPptx2() throws Exception {
+    testDocument("test2.pptx");
+  }
+
   public void testDocument(String filename) throws InterruptedException {
     List<Thread> threads = new ArrayList<Thread>();
 
     final NodeRef document = uploadDocument(_site, filename).getNodeRef();
 
-    for (int x = 0; x < 10; x++) {
+    for (int x = 0; x < 1; x++) {
       Thread thread = new Thread(new Runnable() {
 
         @Override
