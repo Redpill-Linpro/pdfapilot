@@ -69,15 +69,15 @@ public class MetadataVerifierImpl implements MetadataVerifier {
     }
 
     if (sizeLimit == null || sizeLimit.length() == 0) {
-      LOG.warn("No size limit found. Allowing.");
+      LOG.warn("No size limit found. Allowing. File name: " + file.getName());
     } else {
-      long sizeLimitLong = Long.valueOf(sizeLimit)*1024;
+      long sizeLimitLong = Long.valueOf(sizeLimit) * 1024;
 
       if (file.length() > sizeLimitLong) {
-        LOG.warn("File length is above the limit for node" + node + " Denying.");
+        LOG.warn("File length is above the limit for node " + node + ". File name: " + file.getName() + " Denying.");
         return false;
       } else if (LOG.isDebugEnabled()) {
-        LOG.debug("Allowing, size is below limit for " + node);
+        LOG.debug("Allowing, size is below limit for node " + node + ". File name: " + file.getName());
       }
     }
     return true;
