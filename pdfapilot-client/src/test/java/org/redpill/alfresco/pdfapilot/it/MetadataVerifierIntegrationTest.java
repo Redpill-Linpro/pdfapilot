@@ -64,14 +64,14 @@ public class MetadataVerifierIntegrationTest extends AbstractRepoIntegrationTest
   @Test
   public void testChangeAndVerifyPptx() throws IOException, UnsupportedMimetypeException {
     String title = testChangeMetadata("test.pptx", MimetypeMap.MIMETYPE_OPENXML_PRESENTATION);
-    
+
     assertEquals("Lorem Ipsum", title);
   }
 
   @Test
   public void testChangeAndVerifyPptx2() throws IOException, UnsupportedMimetypeException {
     String title = testChangeMetadata("test2.pptx", MimetypeMap.MIMETYPE_OPENXML_PRESENTATION);
-    
+
     assertNull(title);
   }
 
@@ -87,7 +87,7 @@ public class MetadataVerifierIntegrationTest extends AbstractRepoIntegrationTest
       IOUtils.copy(inputStream, outputStream);
 
       String title = _metadataVerifier.extractMetadataTitle(file, mimetype);
-      
+
       long total = System.currentTimeMillis() - start;
 
       System.out.println("Extracted metadata title for " + filename + ", time: " + (total / 1000) + " sec.");
@@ -108,9 +108,9 @@ public class MetadataVerifierIntegrationTest extends AbstractRepoIntegrationTest
       IOUtils.copy(inputStream, outputStream);
 
       String basename = FilenameUtils.getBaseName(filename);
-      
+
       NodeRef node = new NodeRef("workspace://SpacesStore/" + GUID.generate());
-      
+
       return _metadataVerifier.changeMetadataTitle(file, node, basename, mimetype);
     } finally {
       file.delete();

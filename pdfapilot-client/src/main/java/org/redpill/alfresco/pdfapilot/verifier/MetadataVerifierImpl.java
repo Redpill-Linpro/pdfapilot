@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.filestore.FileContentReader;
@@ -30,6 +31,7 @@ import org.redpill.alfresco.module.metadatawriter.factories.UnsupportedMimetypeE
 import org.redpill.alfresco.module.metadatawriter.services.ContentFacade;
 import org.redpill.alfresco.module.metadatawriter.services.ContentFacade.ContentException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("ppc.metadataVerifier")
@@ -43,34 +45,72 @@ public class MetadataVerifierImpl implements MetadataVerifier {
   @Autowired
   private MetadataExtracterRegistry _metadataExtracterRegistry;
 
+  @Autowired
+  @Qualifier("global-properties")
+  private Properties globalProperties;
+
+  protected static final String SIZE_LIMIT_PROPERTY_PREFIX = "content.extracter.pdfaPilot.extensions.";
+  protected static final String SIZE_LIMIT_PROPERTY_SUFFIX = ".maxSourceSizeKBytes";
+  protected static final String SIZE_LIMIT_PROPERTY_DEFAULT = SIZE_LIMIT_PROPERTY_PREFIX + "default" + SIZE_LIMIT_PROPERTY_SUFFIX;
+
+  /**
+   * Check against the properties if metadata operations are allowed or not
+   * 
+   * @param file
+   * @param node
+   * @return
+   */
+  protected boolean allowMetadataOperations(File file, NodeRef node) {
+    String extension = FilenameUtils.getExtension(file.getName());
+    String sizeLimitProperty = SIZE_LIMIT_PROPERTY_PREFIX + extension + SIZE_LIMIT_PROPERTY_SUFFIX;
+    String sizeLimit = globalProperties.getProperty(sizeLimitProperty);
+    if (sizeLimit == null || sizeLimit.length() == 0) {
+      sizeLimit = globalProperties.getProperty(SIZE_LIMIT_PROPERTY_DEFAULT);
+    }
+
+    if (sizeLimit == null || sizeLimit.length() == 0) {
+      LOG.warn("No size limit found. Allowing.");
+    } else {
+      long sizeLimitLong = Long.valueOf(sizeLimit)*1024;
+
+      if (file.length() > sizeLimitLong) {
+        LOG.warn("File length is above the limit for node" + node + " Denying.");
+        return false;
+      } else if (LOG.isDebugEnabled()) {
+        LOG.debug("Allowing, size is below limit for " + node);
+      }
+    }
+    return true;
+  }
+
   @Override
   public String changeMetadataTitle(File file, NodeRef node, String basename, String mimetype) {
     String title = null;
+    if (allowMetadataOperations(file, node)) {
+      try {
+        title = extractMetadataTitle(file, mimetype);
 
-    try {
-      title = extractMetadataTitle(file, mimetype);
+        String hash = MD5.Digest(node.toString().getBytes());
 
-      String hash = MD5.Digest(node.toString().getBytes());
+        writeMetadataTitle(file, basename, mimetype, hash);
+      } catch (UnsupportedMimetypeException ex) {
+        if (LOG.isTraceEnabled()) {
+          LOG.trace(ex.getMessage(), ex);
+        }
 
-      writeMetadataTitle(file, basename, mimetype, hash);
-    } catch (UnsupportedMimetypeException ex) {
-      if (LOG.isTraceEnabled()) {
-        LOG.trace(ex.getMessage(), ex);
+        LOG.error(ex.getMessage());
+
+        title = null;
+      } catch (InvalidFormatException ex) {
+        if (LOG.isTraceEnabled()) {
+          LOG.trace(ex.getMessage(), ex);
+        }
+
+        LOG.error(ex.getMessage());
+
+        title = null;
       }
-
-      LOG.error(ex.getMessage());
-
-      title = null;
-    } catch (InvalidFormatException ex) {
-      if (LOG.isTraceEnabled()) {
-        LOG.trace(ex.getMessage(), ex);
-      }
-
-      LOG.error(ex.getMessage());
-
-      title = null;
     }
-
     return title;
   }
 
@@ -127,22 +167,24 @@ public class MetadataVerifierImpl implements MetadataVerifier {
 
   @Override
   public boolean verifyMetadata(NodeRef node, File file, String basename, String title) throws UnsupportedMimetypeException {
-    boolean result;
+    boolean result = true;
 
-    String extractedHash = extractMetadataTitle(file, "application/pdf");
+    if (allowMetadataOperations(file, node)) {
+      String extractedHash = extractMetadataTitle(file, "application/pdf");
 
-    String hash = MD5.Digest(node.toString().getBytes());
+      String hash = MD5.Digest(node.toString().getBytes());
 
-    if (!hash.equals(extractedHash)) {
-      LOG.warn("The converted file for nodeRef '" + node + "' is not the same as the source file!");
+      if (!hash.equals(extractedHash)) {
+        LOG.warn("The converted file for nodeRef '" + node + "' is not the same as the source file!");
 
-      result = false;
-    } else {
-      result = true;
+        result = false;
+      } else {
+        result = true;
+      }
+
+      // write back the original title
+      writeMetadataTitle(file, basename, "application/pdf", title);
     }
-
-    // write back the original title
-    writeMetadataTitle(file, basename, "application/pdf", title);
 
     return result;
   }
