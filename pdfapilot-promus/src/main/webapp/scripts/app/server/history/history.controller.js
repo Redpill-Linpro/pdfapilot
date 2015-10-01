@@ -2,6 +2,48 @@
 
 angular.module('pdfapilotpromusApp')
     .controller('HistoryController', function ($scope, Principal, ngTableParams, AuditsService, splash) {
+
+        function getAuditEventType() {
+            var auditEventType = [];
+
+            if ($scope.pdfVariant === 'pdf' && $scope.success === 'true') {
+                auditEventType.push('CREATE_PDF_SUCCESS');
+            } else if ($scope.pdfVariant === 'pdf' && $scope.success === 'false') {
+                auditEventType.push('CREATE_PDF_FAILURE');
+            } else if ($scope.pdfVariant === 'pdf') {
+                auditEventType.push('CREATE_PDF_SUCCESS');
+                auditEventType.push('CREATE_PDF_FAILURE');
+            }
+
+            if ($scope.pdfVariant === 'pdfa' && $scope.success === 'true') {
+                auditEventType.push('CREATE_PDFA_SUCCESS');
+            } else if ($scope.pdfVariant === 'pdfa' && $scope.success === 'false') {
+                auditEventType.push('CREATE_PDFA_FAILURE');
+            } else if ($scope.pdfVariant === 'pdfa') {
+                auditEventType.push('CREATE_PDFA_SUCCESS');
+                auditEventType.push('CREATE_PDFA_FAILURE');
+            }
+
+            if (!$scope.pdfVariant && $scope.success === 'true') {
+                auditEventType.push('CREATE_PDF_SUCCESS');
+                auditEventType.push('CREATE_PDFA_SUCCESS');
+            }
+
+            if (!$scope.pdfVariant && $scope.success === 'false') {
+                auditEventType.push('CREATE_PDF_FAILURE');
+                auditEventType.push('CREATE_PDFA_FAILURE');
+            }
+
+            if (!$scope.pdfVariant && !$scope.success) {
+                auditEventType.push('CREATE_PDF_SUCCESS');
+                auditEventType.push('CREATE_PDFA_SUCCESS');
+                auditEventType.push('CREATE_PDF_FAILURE');
+                auditEventType.push('CREATE_PDFA_FAILURE');
+            }
+
+            return auditEventType;
+        }
+
         $scope.tableParameters = new ngTableParams({
             page: 1,
             count: 10
@@ -9,7 +51,7 @@ angular.module('pdfapilotpromusApp')
             total: 0,
             getData: function ($defer, params) {
                 AuditsService.findByAuditEventType({
-                    auditEventType: ['CREATE_PDF_SUCCESS', 'CREATE_PDFA_SUCCESS', 'CREATE_PDFA_FAILURE', 'CREATE_PDF_FAILURE'],
+                    auditEventType: getAuditEventType(),
                     page: params.page(),
                     count: params.count(),
                     filename: $scope.filename,
@@ -23,6 +65,7 @@ angular.module('pdfapilotpromusApp')
                 }).then(function (result) {
                     $defer.resolve(result.events);
                     params.total(result.total);
+                    $scope.total = result.total;
                 }).catch(function (err) {
                     $defer.reject(err);
                 });
@@ -68,7 +111,7 @@ angular.module('pdfapilotpromusApp')
             $scope.toOpened = true;
         };
 
-        $scope.$watchGroup(['filename', 'username', 'node', 'success', 'from', 'to', 'nodeRef', 'verified'], function () {
+        $scope.$watchGroup(['filename', 'username', 'node', 'success', 'from', 'to', 'nodeRef', 'verified', 'pdfVariant'], function () {
             $scope.tableParameters.reload();
         });
 

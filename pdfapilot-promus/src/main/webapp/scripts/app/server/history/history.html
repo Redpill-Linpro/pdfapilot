@@ -66,6 +66,16 @@
                         </select>
                     </p>
                 </div>
+                <div class="form-group">
+                    <label for="pdfVariantFilter">PDF variant</label>
+                    <p class="input-group">
+                        <select class="form-control" id="pdfVariantFilter" ng-model="pdfVariant">
+                            <option value="" label="All">All</option>
+                            <option value="pdf" label="PDF">PDF</option>
+                            <option value="pdfa" label="PDF/A">PDF/A</option>
+                        </select>
+                    </p>
+                </div>
             </form>
         </div>
     </div>
@@ -120,6 +130,13 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <hr/>
+            Total documents: {{ total }}
         </div>
     </div>
 </div>
