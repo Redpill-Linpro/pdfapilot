@@ -1,6 +1,7 @@
 package org.redpill.alfresco.pdfapilot.it;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -101,6 +102,11 @@ public class PdfaPilotWorkerIntegrationTest extends AbstractRepoIntegrationTest 
   }
 
   @Test
+  public void testTwoCharacterFilename() throws Exception {
+    testDocument("fy.doc");
+  }
+
+  @Test
   public void testPptx() throws Exception {
     testDocument("test.pptx");
   }
@@ -141,10 +147,16 @@ public class PdfaPilotWorkerIntegrationTest extends AbstractRepoIntegrationTest 
       }
 
       if (count == 0) {
-        return;
+        break;
       }
 
       Thread.sleep(100);
+    }
+    
+    for (Thread thread : threads) {
+      if (thread.getStackTrace() != null && thread.getStackTrace().length > 0) {
+        fail();
+      }
     }
   }
 
