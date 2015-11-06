@@ -64,6 +64,10 @@ public class CreatePdfService implements ApplicationListener<CreatePdfEvent> {
       data.put("duration", createPdfResult.getDuration());
     }
     
+    if (createPdfResult.getStacktrace() != null) {
+      data.put("stacktrace", createPdfResult.getStacktrace());
+    }
+    
     data.put("date", new Date().getTime());
     data.put("pdfa", createPdfResult.isPdfa());
     data.put("success", createPdfResult.isSuccess());

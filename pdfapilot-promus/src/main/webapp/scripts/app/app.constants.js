@@ -4,6 +4,6 @@ angular.module('pdfapilotpromusApp')
 
 .constant('ENV', 'dev')
 
-.constant('VERSION', '1.1.1')
+.constant('VERSION', '1.1.2')
 
 ;

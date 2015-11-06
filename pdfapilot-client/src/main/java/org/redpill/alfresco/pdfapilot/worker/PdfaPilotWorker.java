@@ -22,7 +22,6 @@ import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.TransformationOptions;
-import org.alfresco.service.transaction.TransactionService;
 import org.alfresco.util.GUID;
 import org.alfresco.util.TempFileProvider;
 import org.apache.commons.io.FilenameUtils;
@@ -56,9 +55,6 @@ public class PdfaPilotWorker extends ContentTransformerHelper implements Content
   @Autowired
   @Qualifier("NodeService")
   private NodeService _nodeService;
-
-  @Autowired
-  private TransactionService _transactionService;
 
   @Autowired
   @Qualifier("policyBehaviourFilter")
@@ -232,7 +228,12 @@ public class PdfaPilotWorker extends ContentTransformerHelper implements Content
         }
       }
 
-      return filename;
+      // pad the string with _ until it's at lest 3 characters long
+      if (basename.length() < 3) {
+        basename = StringUtils.rightPad(basename, 3, "_");
+      }
+      
+      return basename;
     } catch (final Exception ex) {
       throw new RuntimeException(ex);
     }
