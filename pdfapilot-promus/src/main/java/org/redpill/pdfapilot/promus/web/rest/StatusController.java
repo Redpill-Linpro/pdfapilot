@@ -13,7 +13,7 @@ import com.codahale.metrics.annotation.Timed;
 @RestController
 public class StatusController extends AbstractController {
 
-  @Resource(name = "pps.StatusService")
+  @Resource(name = "pps.statusService")
   private StatusService _statusService;
 
   @RequestMapping(value = "/status", method = RequestMethod.GET)

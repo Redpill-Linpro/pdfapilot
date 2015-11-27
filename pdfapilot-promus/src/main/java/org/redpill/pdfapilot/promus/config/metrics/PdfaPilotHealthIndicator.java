@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PdfaPilotHealthIndicator implements HealthIndicator {
   
-  @Resource(name = "pps.StatusService")
+  @Resource(name = "pps.statusService")
   private StatusService _statusService;
 
   @Override
