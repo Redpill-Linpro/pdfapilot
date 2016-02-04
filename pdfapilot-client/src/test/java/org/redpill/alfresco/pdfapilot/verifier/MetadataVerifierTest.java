@@ -8,7 +8,13 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.Properties;
 
+import org.alfresco.model.ContentModel;
+import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.service.cmr.lock.LockService;
+import org.alfresco.service.cmr.repository.ContentReader;
+import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,6 +27,18 @@ public class MetadataVerifierTest {
   @Mock
   Properties globalProperties;
 
+  @Mock
+  LockService lockService;
+  
+  @Mock 
+  DictionaryService dictionaryService;
+  
+  @Mock 
+  NodeService nodeService;
+  
+  @Mock
+  ContentService contentService;
+  
   @InjectMocks
   MetadataVerifierImpl mv;
 
@@ -38,10 +56,12 @@ public class MetadataVerifierTest {
   @Test
   public void testAllowedMetadataExtractionDefault() {
     File file = mock(File.class);
+    ContentReader contentReader = mock(ContentReader.class);
     NodeRef node = new NodeRef("workspace://SpacesStore/mockNode");
 
     when(globalProperties.getProperty(MetadataVerifierImpl.SIZE_LIMIT_PROPERTY_DEFAULT)).thenReturn("102000");
     when(file.length()).thenReturn(100000L*1024);
+    when(contentService.getReader(node, ContentModel.PROP_CONTENT)).thenReturn(contentReader);
     boolean result = mv.allowMetadataOperations(file, node);
     assertTrue("Allow when file is below default limit", result);
   }
@@ -62,12 +82,14 @@ public class MetadataVerifierTest {
   @Test
   public void testAllowedMetadataExtractionFileExt() {
     File file = mock(File.class);
+    ContentReader contentReader = mock(ContentReader.class);
     NodeRef node = new NodeRef("workspace://SpacesStore/mockNode");
 
     when(globalProperties.getProperty(MetadataVerifierImpl.SIZE_LIMIT_PROPERTY_DEFAULT)).thenReturn("102000");
     when(globalProperties.getProperty(MetadataVerifierImpl.SIZE_LIMIT_PROPERTY_PREFIX + "xlsx" + MetadataVerifierImpl.SIZE_LIMIT_PROPERTY_SUFFIX)).thenReturn("10200");
     when(file.length()).thenReturn(10000L*1024);
     when(file.getName()).thenReturn("test.xlsx");
+    when(contentService.getReader(node, ContentModel.PROP_CONTENT)).thenReturn(contentReader);
     boolean result = mv.allowMetadataOperations(file, node);
     assertTrue("Allow when xlsx file is below both default limit and file type limit", result);
   }

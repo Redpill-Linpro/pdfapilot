@@ -32,6 +32,7 @@ import org.redpill.alfresco.module.metadatawriter.services.ContentFacade;
 import org.redpill.alfresco.module.metadatawriter.services.ContentFacade.ContentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component("ppc.metadataVerifier")
@@ -49,6 +50,9 @@ public class MetadataVerifierImpl implements MetadataVerifier {
   @Qualifier("global-properties")
   private Properties globalProperties;
 
+  @Value("${pdfapilot.metadatawriter.enabled}")
+  protected boolean enabled = true;
+
   protected static final String SIZE_LIMIT_PROPERTY_PREFIX = "content.extracter.pdfaPilot.extensions.";
   protected static final String SIZE_LIMIT_PROPERTY_SUFFIX = ".maxSourceSizeKBytes";
   protected static final String SIZE_LIMIT_PROPERTY_DEFAULT = SIZE_LIMIT_PROPERTY_PREFIX + "default" + SIZE_LIMIT_PROPERTY_SUFFIX;
@@ -61,6 +65,12 @@ public class MetadataVerifierImpl implements MetadataVerifier {
    * @return
    */
   protected boolean allowMetadataOperations(File file, NodeRef node) {
+
+    if (!enabled) {
+      LOG.debug("Metadata writing disabled by configuration (pdfapilot.metadatawriter.enabled). Aborting");
+      return false;
+    }
+
     String extension = FilenameUtils.getExtension(file.getName());
     String sizeLimitProperty = SIZE_LIMIT_PROPERTY_PREFIX + extension + SIZE_LIMIT_PROPERTY_SUFFIX;
     String sizeLimit = globalProperties.getProperty(sizeLimitProperty);
