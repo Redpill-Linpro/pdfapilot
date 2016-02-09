@@ -57,3 +57,4 @@ pdfaPilot:
     taskTimeout: 300000
     exe: /usr/local/callas_pdfaPilot_CLI/pdfaPilot
     node: ppp-test-001
+    documentsTempFolder:

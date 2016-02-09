@@ -14,7 +14,7 @@ import com.codahale.metrics.annotation.Timed;
 @RestController
 public class VersionController extends AbstractController {
 
-  @Resource(name = "pps.VersionService")
+  @Resource(name = "pps.versionService")
   private VersionService _versionService;
 
   @RequestMapping(value = "/version", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

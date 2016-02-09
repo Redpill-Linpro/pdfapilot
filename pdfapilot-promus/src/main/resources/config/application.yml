@@ -60,6 +60,7 @@ pdfaPilot:
     exe: /usr/local/bin/pdfaPilot
     node: ppp-001
     endpoint:
+    documentsTempFolder:
 
 multipart:
     maxFileSize: 100MB
