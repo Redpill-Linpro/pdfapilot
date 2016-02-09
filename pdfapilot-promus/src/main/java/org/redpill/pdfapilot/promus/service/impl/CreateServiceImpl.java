@@ -55,6 +55,9 @@ public class CreateServiceImpl implements CreateService {
   @Value("${pdfaPilot.nooptimization}")
   private boolean _nooptimization;
 
+  @Value("${pdfaPilot.documentsTempFolder}")
+  private String _documentsTempFolder;
+
   @Autowired
   private ApplicationEventPublisher _applicationEventPublisher;
 
@@ -126,7 +129,14 @@ public class CreateServiceImpl implements CreateService {
       }
 
       File systemTempDir = FileUtils.getTempDirectory();
-      tempDir = new File(systemTempDir, UUID.randomUUID().toString());
+      File customTempDir = new File(_documentsTempFolder);
+      if (customTempDir.exists()) {
+        LOG.debug("Using custom temp dir: " + _documentsTempFolder);
+        tempDir = new File(customTempDir, UUID.randomUUID().toString());
+      } else {
+        LOG.debug("Using system temp dir" + systemTempDir.getAbsolutePath());
+        tempDir = new File(systemTempDir, UUID.randomUUID().toString());
+      }
       FileUtils.forceMkdir(tempDir);
 
       sourceFile = new File(tempDir, FilenameUtils.getName(filename));
