@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn clean package $1
+mvn clean package $1 $2 $3
