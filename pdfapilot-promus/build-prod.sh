@@ -1,3 +1,3 @@
 #!/bin/bash 
 
-./build.sh -Pprod
+./build.sh -Pprod $1 $2

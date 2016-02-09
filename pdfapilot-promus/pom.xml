@@ -11,7 +11,7 @@
 
     <groupId>org.redpill.pdfapilot.promus</groupId>
     <artifactId>pdfapilot-promus</artifactId>
-    <version>1.1.4-SNAPSHOT</version>
+    <version>1.1.4</version>
     <packaging>war</packaging>
 
     <name>pdfaPilot Promus</name>
@@ -167,13 +167,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- The HikariCP Java Agent is disabled by default, as it is experimental
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP-agent</artifactId>
-            <version>${HikariCP.version}</version>
-        </dependency>
-        -->
+        <!-- The HikariCP Java Agent is disabled by default, as it is experimental <dependency> <groupId>com.zaxxer</groupId> <artifactId>HikariCP-agent</artifactId> <version>${HikariCP.version}</version> </dependency> -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -392,7 +386,7 @@
                 </excludes>
             </resource>
         </resources>
-        
+
         <plugins>
             <plugin>
                 <groupId>com.google.code.sortpom</groupId>
@@ -425,9 +419,18 @@
                     <resultsFolder>target/gatling/results</resultsFolder>
                     <bodiesFolder>src/test/gatling/bodies</bodiesFolder>
                     <simulationsFolder>src/test/gatling/simulations</simulationsFolder>
-                    <!-- This will force Gatling to ask which simulation to run
-                         This is useful when you have multiple simulations -->
+                    <!-- This will force Gatling to ask which simulation to run This is useful when you have multiple simulations -->
                     <simulationClass>*</simulationClass>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -520,7 +523,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <jvmArguments></jvmArguments>
+                    <jvmArguments />
                     <arguments>
                         <argument>--spring.profiles.active=dev</argument>
                     </arguments>
