@@ -79,7 +79,7 @@ public class MetadataVerifierImpl implements MetadataVerifier {
     }
 
     if (sizeLimit == null || sizeLimit.length() == 0) {
-      LOG.warn("No size limit found. Allowing. File name: " + file.getName());
+      LOG.trace("No size limit found. Allowing. File name: " + file.getName());
     } else {
       long sizeLimitLong = Long.valueOf(sizeLimit) * 1024;
 
