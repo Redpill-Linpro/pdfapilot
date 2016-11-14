@@ -70,6 +70,11 @@ public class MetadataVerifierImpl implements MetadataVerifier {
       LOG.debug("Metadata writing disabled by configuration (pdfapilot.metadatawriter.enabled). Aborting");
       return false;
     }
+    
+    //Check if node ref is supplied
+    if (node==null) {
+      return false;
+    }
 
     String extension = FilenameUtils.getExtension(file.getName());
     String sizeLimitProperty = SIZE_LIMIT_PROPERTY_PREFIX + extension + SIZE_LIMIT_PROPERTY_SUFFIX;
