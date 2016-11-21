@@ -34,6 +34,7 @@ import org.redpill.alfresco.pdfapilot.client.PdfaPilotClientImpl.CreateResult;
 import org.redpill.alfresco.pdfapilot.verifier.MetadataVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component("ppc.pdfaPilotWorker")
@@ -61,6 +62,10 @@ public class PdfaPilotWorker extends ContentTransformerHelper implements Content
   private BehaviourFilter _behaviourFilter;
 
   private boolean _available;
+
+  @Autowired
+  @Value("${pdfapilot.client.enabled}")
+  private boolean enabled;
 
   private boolean _licensed;
 
@@ -134,7 +139,7 @@ public class PdfaPilotWorker extends ContentTransformerHelper implements Content
 
     if (StringUtils.isBlank(sourceExtension) || StringUtils.isBlank(targetExtension)) {
       throw new AlfrescoRuntimeException("Unknown extensions for mimetypes: \n" + "   source mimetype: " + sourceMimetype + "\n" + "   source extension: " + sourceExtension + "\n"
-          + "   target mimetype: " + targetMimetype + "\n" + "   target extension: " + targetExtension);
+              + "   target mimetype: " + targetMimetype + "\n" + "   target extension: " + targetExtension);
     }
 
     NodeRef sourceNodeRef = options.getSourceNodeRef();
@@ -232,7 +237,7 @@ public class PdfaPilotWorker extends ContentTransformerHelper implements Content
       if (basename.length() < 3) {
         basename = StringUtils.rightPad(basename, 3, "_");
       }
-      
+
       return basename;
     } catch (final Exception ex) {
       throw new RuntimeException(ex);
@@ -241,7 +246,7 @@ public class PdfaPilotWorker extends ContentTransformerHelper implements Content
 
   @Override
   public boolean isAvailable() {
-    return _available;
+    return _available && enabled;
   }
 
   public void setAvailable(boolean available) {
