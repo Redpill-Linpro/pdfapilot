@@ -11,7 +11,7 @@
 
   <groupId>org.redpill.pdfapilot.client</groupId>
   <artifactId>pdfapilot-client</artifactId>
-  <version>1.1.4</version>
+  <version>1.2.0</version>
 
   <name>pdfaPilot client</name>
   <description>This is a transformer implementation as a subsystem of pdfaPilot run as a dispatcher.</description>
@@ -39,7 +39,7 @@
     <connection>scm:git:https://github.com/Redpill-Linpro/pdfa-pilot-converter.git</connection>
     <developerConnection>scm:git:https://github.com/Redpill-Linpro/pdfa-pilot-converter.git</developerConnection>
     <url>https://github.com/Redpill-Linpro/pdfa-pilot-converter</url>
-    <tag>pdfa-pilot-converter-1.1.0</tag>
+    <tag>pdfa-pilot-converter-1.2.0</tag>
   </scm>
 
   <issueManagement>
