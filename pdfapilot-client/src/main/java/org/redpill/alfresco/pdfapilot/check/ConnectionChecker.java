@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.redpill.alfresco.pdfapilot.client.PdfaPilotClient;
 import org.redpill.alfresco.pdfapilot.worker.PdfaPilotWorker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.extensions.surf.util.AbstractLifecycleBean;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,11 @@ public class ConnectionChecker extends AbstractLifecycleBean {
   protected void onBootstrap(ApplicationEvent event) {
     checkConnection();
   }
+  
+  @Autowired
+  @Value("${pdfapilot.client.enabled}")
+  private boolean enabled;
+
 
   @Override
   protected void onShutdown(ApplicationEvent event) {
@@ -37,8 +43,10 @@ public class ConnectionChecker extends AbstractLifecycleBean {
 
     try {
       if (lockAcquired) {
-        boolean connected = _pdfaPilotClient.isConnected();
-
+    	boolean connected = false;
+    	if (enabled){
+    		connected = _pdfaPilotClient.isConnected();
+    	}
         _pdfaPilotWorker.setAvailable(connected);
 
         return;
