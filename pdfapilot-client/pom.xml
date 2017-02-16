@@ -11,7 +11,7 @@
 
   <groupId>org.redpill.pdfapilot.client</groupId>
   <artifactId>pdfapilot-client</artifactId>
-  <version>1.3.0</version>
+  <version>1.4.0-SNAPSHOT</version>
 
   <name>pdfaPilot client</name>
   <description>This is a transformer implementation as a subsystem of pdfaPilot run as a dispatcher.</description>
