@@ -435,7 +435,8 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
     client.getHttpConnectionManager().getParams().setTcpNoDelay(true);
 
     client.getHttpConnectionManager().getParams().setConnectionTimeout(connectionTimeoutInMillis);
-
+    
+    
     client.getHttpConnectionManager().getParams().setSoTimeout(_transformationTimeout * 1000);
 
     client.getHttpConnectionManager().getParams().setMaxTotalConnections(_maxTotalConnections);
@@ -455,6 +456,7 @@ public class PdfaPilotClientImpl implements PdfaPilotClient {
     client.getState().setCredentials(new AuthScope(null, -1, null), new UsernamePasswordCredentials(_username, _password));
 
     client.getParams().setAuthenticationPreemptive(true);
+    client.getParams().setConnectionManagerTimeout(connectionTimeoutInMillis);
 
     DefaultHttpMethodRetryHandler retryhandler = new DefaultHttpMethodRetryHandler(retries, true);
     client.getParams().setParameter("http.method.retry-handler", retryhandler);
